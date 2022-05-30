@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -26,11 +27,11 @@ public class HolidaysController {
                 new Holiday(" Sep 5 ","Labor Day", Holiday.Type.FEDERAL),
                 new Holiday(" Nov 11 ","Veterans Day", Holiday.Type.FEDERAL)
         );
-        Holiday.Type[] types = Holiday.Type.values();
-        for (Holiday.Type type : types) {
-            model.addAttribute(type.toString(),
-                    (holidays.stream().filter(holiday -> holiday.getType().equals(type)).collect(Collectors.toList())));
-        }
+        Map<Holiday.Type, List<Holiday>> holidaysTypeMap = holidays.stream()
+                .collect(Collectors.groupingBy(Holiday::getType));
+
+        holidaysTypeMap.forEach((type, holidays1) -> model.addAttribute(type.toString(),holidays1));
+
         return "holidays.html";
     }
 }
