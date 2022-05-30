@@ -30,7 +30,9 @@ public class HolidaysController {
         Map<Holiday.Type, List<Holiday>> holidaysTypeMap = holidays.stream()
                 .collect(Collectors.groupingBy(Holiday::getType));
 
-        holidaysTypeMap.forEach((type, holidays1) -> model.addAttribute(type.toString(),holidays1));
+        holidaysTypeMap.forEach((type, holidays1) -> {
+            log.info("the Type {}; the List: {}",type, holidays1);
+            model.addAttribute(type.toString(),holidays1);});
 
         return "holidays.html";
     }
