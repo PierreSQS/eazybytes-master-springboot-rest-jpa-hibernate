@@ -21,6 +21,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(ContactController.class)
 class ContactControllerTest {
 
+    private MultiValueMap<String, String> multiValueMap;
+    private Contact contact;
+
     @Autowired
     MockMvc mockMvc;
 
@@ -29,6 +32,18 @@ class ContactControllerTest {
 
     @BeforeEach
     void setUp() {
+        // Given
+        contact = new Contact();
+        contact.setName("Pierrot Test");
+        contact.setEmail("pierrot@example.com");
+        contact.setMessage("Please contact me");
+        contact.setSubject("Very urgent");
+
+        multiValueMap = new LinkedMultiValueMap<>();
+        multiValueMap.add("name",contact.getName());
+        multiValueMap.add("email", contact.getEmail());
+        multiValueMap.add("message", contact.getMessage());
+        multiValueMap.add("subject",contact.getSubject());
     }
 
     @Test
@@ -43,21 +58,10 @@ class ContactControllerTest {
     }
 
     @Test
-    void saveMessage() throws Exception {
+    void saveMessageOK() throws Exception {
         // Given
-        Contact contact = new Contact();
-        contact.setName("Pierrot Test");
-        contact.setEmail("pierrot@example.com");
-        contact.setMessage("Please contact me");
-        contact.setSubject("Very urgent");
-        contact.setMobileNum("21212121221");
-
-        MultiValueMap<String,String> multiValueMap = new LinkedMultiValueMap<>();
-        multiValueMap.add("name",contact.getName());
-        multiValueMap.add("email", contact.getEmail());
-        multiValueMap.add("message", contact.getMessage());
+        contact.setMobileNum("2121212122");
         multiValueMap.add("mobileNum",contact.getMobileNum());
-        multiValueMap.add("subject",contact.getSubject());
 
         // When, Then
         mockMvc.perform(post("/saveMsg").params(multiValueMap))
@@ -66,6 +70,21 @@ class ContactControllerTest {
                 .andDo(print());
 
         verify(contactSrvMock).saveMessageDetails(contact);
+
+    }
+
+    @Test
+    void saveMessageMobileNrWrong() throws Exception {
+        // Given
+        contact.setMobileNum("21212121221");
+        multiValueMap.add("mobileNum",contact.getMobileNum());
+
+        // When, Then
+        mockMvc.perform(post("/saveMsg").params(multiValueMap))
+                .andExpect(status().isOk())
+                .andExpect(view().name("contact.html"))
+                .andExpect(content().string(containsString("Mobile number must be 10 digits")))
+                .andDo(print());
 
     }
 }
