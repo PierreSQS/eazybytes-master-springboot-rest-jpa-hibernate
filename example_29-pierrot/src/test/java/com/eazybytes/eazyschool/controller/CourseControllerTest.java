@@ -10,11 +10,11 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest
 @ContextConfiguration(classes = WebConfig.class)
@@ -29,6 +29,7 @@ class CourseControllerTest {
         mockMvc.perform(get("/courses"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("courses"))
+                .andExpect(content().string(containsString("<title>Eazy School - Best Educational Institute for your Child</title>")))
                 .andDo(print());
     }
 
@@ -37,6 +38,7 @@ class CourseControllerTest {
         mockMvc.perform(get("/courses").with(user("mock user").password("12345")))
                 .andExpect(status().isOk())
                 .andExpect(view().name("courses"))
+                .andExpect(content().string(containsString("<title>Eazy School - Best Educational Institute for your Child</title>")))
                 .andDo(print());
     }
 
@@ -50,6 +52,7 @@ class CourseControllerTest {
         mockMvc.perform(get("/courses").with(user(user)))
                 .andExpect(status().isOk())
                 .andExpect(view().name("courses"))
+                .andExpect(content().string(containsString("<title>Eazy School - Best Educational Institute for your Child</title>")))
                 .andDo(print());
     }
 }
