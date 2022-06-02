@@ -18,7 +18,7 @@ public class ContactRepository {
                 "CREATED_AT, CREATED_BY) VALUES (?,?,?,?,?,?,?,?)";
 
         return jdbcTemplate.update(sql,contact.getName(),contact.getMobileNum()
-                                      ,contact.getEmail(),contact.getSubject(),contact.getSubject()
-                                      ,contact.getMessage(),contact.getStatus(),contact.getCreatedAt(), contact.getCreatedBy());
+                                      ,contact.getEmail(),contact.getSubject(),contact.getMessage()
+                                      ,contact.getStatus(),contact.getCreatedAt(), contact.getCreatedBy());
     }
 }
