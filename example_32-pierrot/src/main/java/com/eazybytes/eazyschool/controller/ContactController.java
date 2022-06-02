@@ -11,8 +11,10 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Slf4j
 @Controller
@@ -42,6 +44,12 @@ public class ContactController {
         return "redirect:/contact";
     }
 
-
+    @GetMapping("/displayMessages")
+    public ModelAndView displayContactMessages(String status) {
+        List<Contact> contactMsgWithOpenStatus = contactService.findContactMsgWithOpenStatus(status);
+        ModelAndView modelAndView = new ModelAndView("messages.html");
+        modelAndView.addObject("contactMsgs",contactMsgWithOpenStatus);
+        return modelAndView;
+    }
 
 }

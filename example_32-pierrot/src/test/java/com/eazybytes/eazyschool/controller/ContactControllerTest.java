@@ -83,8 +83,19 @@ class ContactControllerTest {
         mockMvc.perform(post("/saveMsg").params(multiValueMap))
                 .andExpect(status().isOk())
                 .andExpect(view().name("contact.html"))
+                .andExpect(model().attributeHasErrors())
+                .andExpect(model().attributeHasFieldErrors("contact","mobileNum"))
                 .andExpect(content().string(containsString("Mobile number must be 10 digits")))
                 .andDo(print());
 
+    }
+
+    @Test
+    void displayContactMessages() throws Exception {
+        mockMvc.perform(get("/displayMessages"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("messages.html"))
+                .andExpect(content().string(containsString("Open Contact Messages")))
+                .andDo(print());
     }
 }

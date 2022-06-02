@@ -7,7 +7,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.ApplicationScope;
 
+import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /*
 @Slf4j, is a Lombok-provided annotation that will automatically generate an SLF4J
@@ -40,4 +42,7 @@ public class ContactService {
         return (savedContactCnt > 0);
     }
 
+    public List<Contact> findContactMsgWithOpenStatus(String status) {
+        return contactRepo.findMessagesWithOpenStatus(status);
+    }
 }
