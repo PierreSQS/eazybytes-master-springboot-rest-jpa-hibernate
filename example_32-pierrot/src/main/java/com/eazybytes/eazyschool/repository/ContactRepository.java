@@ -30,9 +30,15 @@ public class ContactRepository {
 
     public List<Contact> findMessagesWithOpenStatus(String status) {
         String sql = "SELECT * FROM CONTACT_MSG WHERE STATUS=?";
-
         return jdbcTemplate.query(sql, contactRowMapper,status);
 
+
+    }
+
+    public int updateContact(Integer id, String status, String updatedBy) {
+        String sql = "UPDATE CONTACT_MSG SET STATUS= ?, UPDATED_BY=? WHERE CONTACT_ID = ?";
+
+        return jdbcTemplate.update(sql, status, updatedBy, id);
 
     }
 }

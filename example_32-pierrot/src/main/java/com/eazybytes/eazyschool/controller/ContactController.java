@@ -6,6 +6,7 @@ import com.eazybytes.eazyschool.service.ContactService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -37,7 +38,7 @@ public class ContactController {
 
     @PostMapping("/saveMsg")
     public String saveMessage(@Valid @ModelAttribute Contact contact, Errors errors) {
-        if(errors.hasErrors()){
+        if (errors.hasErrors()) {
             log.error("Contact form validation failed due to : " + errors.getFieldErrors()
                     .stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList());
             return "contact.html";
@@ -50,8 +51,16 @@ public class ContactController {
     public ModelAndView displayContactMessages(@RequestParam(required = false, defaultValue = EazySchoolConstants.OPEN) String status) {
         List<Contact> contactMsgWithOpenStatus = contactService.findContactMsgWithOpenStatus(status);
         ModelAndView modelAndView = new ModelAndView("messages.html");
-        modelAndView.addObject("contactMsgs",contactMsgWithOpenStatus);
+        modelAndView.addObject("contactMsgs", contactMsgWithOpenStatus);
         return modelAndView;
+    }
+
+    @GetMapping(value = "/closeMsg")
+    public String closeMessage(@RequestParam Integer id, Authentication auth) {
+        int updatedStatuses = contactService.updateContactStatus(id, auth.getName());
+        log.info("#### Updated Statuses: {}", updatedStatuses);
+
+        return "redirect:/displayMessages";
     }
 
 }

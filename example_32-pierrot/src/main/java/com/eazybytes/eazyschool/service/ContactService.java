@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.ApplicationScope;
 
-import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -44,5 +43,9 @@ public class ContactService {
 
     public List<Contact> findContactMsgWithOpenStatus(String status) {
         return contactRepo.findMessagesWithOpenStatus(status);
+    }
+
+    public int updateContactStatus(Integer id, String updatedBy) {
+        return contactRepo.updateContact(id, EazySchoolConstants.CLOSE, updatedBy);
     }
 }
