@@ -1,5 +1,6 @@
 package com.eazybytes.eazyschool.controller;
 
+import com.eazybytes.eazyschool.constants.EazySchoolConstants;
 import com.eazybytes.eazyschool.model.Contact;
 import com.eazybytes.eazyschool.service.ContactService;
 import org.junit.jupiter.api.BeforeEach;
@@ -94,7 +95,7 @@ class ContactControllerTest {
     @Test
     @WithMockUser(roles = {"ADMIN"})
     void displayContactMessages() throws Exception {
-        mockMvc.perform(get("/displayMessages"))
+        mockMvc.perform(get("/displayMessages").param("status", EazySchoolConstants.OPEN))
                 .andExpect(status().isOk())
                 .andExpect(view().name("messages.html"))
                 .andExpect(content().string(containsString("Open Contact Messages")))

@@ -1,5 +1,6 @@
 package com.eazybytes.eazyschool.controller;
 
+import com.eazybytes.eazyschool.constants.EazySchoolConstants;
 import com.eazybytes.eazyschool.model.Contact;
 import com.eazybytes.eazyschool.service.ContactService;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +12,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
@@ -45,7 +47,7 @@ public class ContactController {
     }
 
     @GetMapping("/displayMessages")
-    public ModelAndView displayContactMessages(String status) {
+    public ModelAndView displayContactMessages(@RequestParam(required = false, defaultValue = EazySchoolConstants.OPEN) String status) {
         List<Contact> contactMsgWithOpenStatus = contactService.findContactMsgWithOpenStatus(status);
         ModelAndView modelAndView = new ModelAndView("messages.html");
         modelAndView.addObject("contactMsgs",contactMsgWithOpenStatus);
