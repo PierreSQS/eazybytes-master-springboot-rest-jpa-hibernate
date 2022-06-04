@@ -5,6 +5,7 @@ import com.eazybytes.eazyschool.rowmapper.ContactRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -36,9 +37,10 @@ public class ContactRepository {
     }
 
     public int updateContact(Integer id, String status, String updatedBy) {
-        String sql = "UPDATE CONTACT_MSG SET STATUS= ?, UPDATED_BY=? WHERE CONTACT_ID = ?";
+        String sql = "UPDATE CONTACT_MSG SET STATUS= ?, UPDATED_AT=? , UPDATED_BY=? WHERE CONTACT_ID = ?";
+        String updatedAt = LocalDateTime.now().toString();
 
-        return jdbcTemplate.update(sql, status, updatedBy, id);
+        return jdbcTemplate.update(sql, status, updatedAt, updatedBy, id);
 
     }
 }
