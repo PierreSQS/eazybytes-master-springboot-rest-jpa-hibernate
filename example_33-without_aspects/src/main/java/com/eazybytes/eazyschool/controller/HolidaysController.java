@@ -1,13 +1,13 @@
 package com.eazybytes.eazyschool.controller;
 
 import com.eazybytes.eazyschool.model.Holiday;
+import com.eazybytes.eazyschool.service.HolidayService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -20,6 +20,12 @@ public class HolidaysController {
     public static final String FESTIVAL_ATTR = "festival";
     public static final String FEDERAL_ATTR = "federal";
 
+    private final HolidayService holidaySrv;
+
+    public HolidaysController(HolidayService holidaySrv) {
+        this.holidaySrv = holidaySrv;
+    }
+
     @GetMapping("/holidays/{display}")
     public String displayHolidays(@PathVariable String display,Model model) {
         if(null != display && display.equals("all")){
@@ -30,16 +36,7 @@ public class HolidaysController {
         }else if(null != display && display.equals(FESTIVAL_ATTR)){
             model.addAttribute(FESTIVAL_ATTR,true);
         }
-        List<Holiday> holidays = Arrays.asList(
-                new Holiday(" Jan 1 ","New Year's Day", Holiday.Type.FESTIVAL),
-                new Holiday(" Oct 31 ","Halloween", Holiday.Type.FESTIVAL),
-                new Holiday(" Nov 24 ","Thanksgiving Day", Holiday.Type.FESTIVAL),
-                new Holiday(" Dec 25 ","Christmas", Holiday.Type.FESTIVAL),
-                new Holiday(" Jan 17 ","Martin Luther King Jr. Day", Holiday.Type.FEDERAL),
-                new Holiday(" July 4 ","Independence Day", Holiday.Type.FEDERAL),
-                new Holiday(" Sep 5 ","Labor Day", Holiday.Type.FEDERAL),
-                new Holiday(" Nov 11 ","Veterans Day", Holiday.Type.FEDERAL)
-        );
+        List<Holiday> holidays = holidaySrv.listHolidays();
 
         Map<Holiday.Type, List<Holiday>> holidaysMap = holidays.stream().collect(groupingBy(Holiday::getType));
         holidaysMap.forEach((type, holidays1) -> {
