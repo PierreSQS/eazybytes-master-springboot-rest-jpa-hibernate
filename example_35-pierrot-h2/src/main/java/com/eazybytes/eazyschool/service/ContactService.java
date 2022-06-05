@@ -9,6 +9,7 @@ import org.springframework.web.context.annotation.ApplicationScope;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 /*
 @Slf4j, is a Lombok-provided annotation that will automatically generate an SLF4J
@@ -36,16 +37,25 @@ public class ContactService {
         contact.setCreatedAt(LocalDateTime.now());
         contact.setCreatedBy(contact.getName());
 
-        int savedContactCnt = contactRepo.saveContactMsg(contact);
-        log.info("the contact saved: {}", contact);
-        return (savedContactCnt > 0);
+        Contact savedContact = contactRepo.save(contact);
+        log.info("the contact saved: {}", savedContact);
+        return savedContact.getContactId() > 0;
     }
 
     public List<Contact> findContactMsgWithOpenStatus(String status) {
-        return contactRepo.findMessagesWithOpenStatus(status);
+        return contactRepo.findByStatus(status);
     }
 
     public int updateContactStatus(Integer id, String updatedBy) {
-        return contactRepo.updateContact(id, EazySchoolConstants.CLOSE, updatedBy);
+        Optional<Contact> foundContactOpt = contactRepo.findById(id);
+        if (foundContactOpt.isPresent()) {
+            Contact foundContact = foundContactOpt.get();
+            foundContact.setUpdatedBy(updatedBy);
+            foundContact.setStatus(EazySchoolConstants.CLOSE);
+            foundContact.setUpdatedAt(LocalDateTime.now());
+            contactRepo.save(foundContact);
+            return 1;
+        }
+        return 0;
     }
 }

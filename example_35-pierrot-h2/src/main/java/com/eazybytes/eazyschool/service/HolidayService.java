@@ -16,6 +16,6 @@ public class HolidayService {
     }
 
     public List<Holiday> listHolidays() {
-        return holidaysRepo.listHolidays();
+        return holidaysRepo.findAll();
     }
 }
