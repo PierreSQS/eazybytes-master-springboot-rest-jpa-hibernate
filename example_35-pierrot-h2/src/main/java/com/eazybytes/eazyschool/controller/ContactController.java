@@ -58,6 +58,7 @@ public class ContactController {
     @GetMapping(value = "/closeMsg")
     public String closeMessage(@RequestParam Integer id, Authentication auth) {
         int updatedStatuses = contactService.updateContactStatus(id, auth.getName());
+        log.info("#### authenticated user: {}", auth.getName());
         log.info("#### Updated Statuses: {}", updatedStatuses);
 
         return "redirect:/displayMessages";

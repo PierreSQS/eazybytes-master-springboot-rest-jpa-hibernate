@@ -14,7 +14,8 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import static org.hamcrest.Matchers.containsString;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -101,5 +102,28 @@ class ContactControllerTest {
                 .andExpect(view().name("messages.html"))
                 .andExpect(content().string(containsString("Open Contact Messages")))
                 .andDo(print());
+    }
+
+    @Test
+    @WithMockUser(username = "Mock User")
+    void closeMessageWithAuthenticatedUser() throws Exception {
+        // Given
+        given(contactSrvMock.updateContactStatus(anyInt(),anyString())).willReturn(1);
+        mockMvc.perform(get("/closeMsg").param("id","1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/displayMessages"))
+                .andDo(print());
+
+    }
+    @Test
+    void closeMessageWithoutAuthentication() throws Exception {
+        // Given
+        given(contactSrvMock.updateContactStatus(anyInt(),anyString())).willReturn(1);
+        mockMvc.perform(get("/closeMsg").param("id","1"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("error"))
+                .andExpect(content().string(containsString("oops...")))
+                .andDo(print());
+
     }
 }
