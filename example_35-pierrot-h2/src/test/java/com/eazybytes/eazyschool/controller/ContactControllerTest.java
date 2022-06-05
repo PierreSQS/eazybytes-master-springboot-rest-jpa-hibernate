@@ -14,6 +14,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -71,7 +72,7 @@ class ContactControllerTest {
                 .andExpect(view().name("redirect:/contact"))
                 .andDo(print());
 
-        verify(contactSrvMock).saveMessageDetails(contact);
+        verify(contactSrvMock).saveMessageDetails(any());
 
     }
 
