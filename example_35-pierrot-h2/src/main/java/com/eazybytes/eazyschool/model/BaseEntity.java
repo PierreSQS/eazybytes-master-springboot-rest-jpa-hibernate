@@ -1,10 +1,15 @@
 package com.eazybytes.eazyschool.model;
 
-import lombok.Data;
+import lombok.*;
 
+import javax.persistence.MappedSuperclass;
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
+@MappedSuperclass
 public class BaseEntity {
     private LocalDateTime createdAt;
     private String createdBy;

@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS `contact_msg` (
 );
 
 CREATE TABLE IF NOT EXISTS `holidays` (
+  `id` int AUTO_INCREMENT  PRIMARY KEY,
   `day` varchar(20) NOT NULL,
   `reason` varchar(100) NOT NULL,
   `type` varchar(20) NOT NULL,
