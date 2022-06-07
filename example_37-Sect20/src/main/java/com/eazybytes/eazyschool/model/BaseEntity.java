@@ -1,6 +1,6 @@
 package com.eazybytes.eazyschool.model;
 
-import lombok.Data;
+import lombok.*;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -12,7 +12,10 @@ import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 public class BaseEntity {

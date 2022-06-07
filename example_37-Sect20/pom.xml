@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.eazybytes</groupId>
-	<artifactId>example_37-Sect37</artifactId>
+	<artifactId>example_37-Sect20</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>example_37-Sect37</name>
+	<name>example_37-Sect20</name>
 	<description>Eazy School Web Application</description>
 	<properties>
 		<java.version>11</java.version>
@@ -69,6 +69,10 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-test</artifactId>
 		</dependency>
 	</dependencies>
 
