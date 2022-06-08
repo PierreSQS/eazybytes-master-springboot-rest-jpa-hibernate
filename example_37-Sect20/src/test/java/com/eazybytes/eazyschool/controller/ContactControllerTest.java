@@ -4,6 +4,7 @@ import com.eazybytes.eazyschool.constants.EazySchoolConstants;
 import com.eazybytes.eazyschool.model.Contact;
 import com.eazybytes.eazyschool.service.ContactService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -115,6 +116,8 @@ class ContactControllerTest {
                 .andDo(print());
 
     }
+
+    @Disabled("No more correct since we update with JPA auditing, thus authentication no needed anymore!!!!!!")
     @Test
     void closeMessageWithoutAuthentication() throws Exception {
         // Given

@@ -23,6 +23,9 @@ public class Holiday extends BaseEntity {
     private Type type;
 
     public Holiday(String day, String reason, Type type) {
+        this.day = day;
+        this.reason = reason;
+        this.type = type;
     }
 
     public enum Type {
