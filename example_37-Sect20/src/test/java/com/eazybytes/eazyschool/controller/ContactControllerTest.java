@@ -4,7 +4,6 @@ import com.eazybytes.eazyschool.constants.EazySchoolConstants;
 import com.eazybytes.eazyschool.model.Contact;
 import com.eazybytes.eazyschool.service.ContactService;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -15,7 +14,8 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import static org.hamcrest.Matchers.containsString;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -117,16 +117,4 @@ class ContactControllerTest {
 
     }
 
-    @Disabled("No more correct since we update with JPA auditing, thus authentication no needed anymore!!!!!!")
-    @Test
-    void closeMessageWithoutAuthentication() throws Exception {
-        // Given
-        given(contactSrvMock.updateContactStatus(anyInt())).willReturn(true);
-        mockMvc.perform(get("/closeMsg").param("id","1"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("error"))
-                .andExpect(content().string(containsString("oops...")))
-                .andDo(print());
-
-    }
 }
