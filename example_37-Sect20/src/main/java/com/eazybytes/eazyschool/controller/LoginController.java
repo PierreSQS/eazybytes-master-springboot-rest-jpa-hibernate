@@ -18,16 +18,20 @@ import javax.servlet.http.HttpServletResponse;
 public class LoginController {
 
     @RequestMapping("/login")
-    public String displayLoginPage(@RequestParam(value = "error", required = false) String error,
-                                   @RequestParam(value = "logout", required = false) String logout,Model model) {
-        String errorMessge = null;
+    public String displayLoginPage(@RequestParam(required = false) String error,
+                                   @RequestParam(required = false) String logout,
+                                   @RequestParam(required = false)String register, Model model) {
+        String errorMessage = null;
         if(error != null) {
-            errorMessge = "Username or Password is incorrect !!";
+            errorMessage = "Username or Password is incorrect !!";
         }
         if(logout != null) {
-            errorMessge = "You have been successfully logged out !!";
+            errorMessage = "You have been successfully logged out !!";
         }
-        model.addAttribute("errorMessge", errorMessge);
+        if (register != null) {
+            errorMessage = "You registration successful. Login with registered credentials !!";
+        }
+        model.addAttribute("errorMessge", errorMessage);
         return "login.html";
     }
 
