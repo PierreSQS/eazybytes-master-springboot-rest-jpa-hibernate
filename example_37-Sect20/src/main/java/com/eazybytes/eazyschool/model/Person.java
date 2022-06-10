@@ -70,7 +70,7 @@ public class Person extends BaseEntity{
     private Roles roles;
 
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, targetEntity = Address.class)
-    @JoinColumn(name = "address_id", referencedColumnName = "addressId", nullable = true)
+    @JoinColumn(name = "address_id", referencedColumnName = "addressId")
     private Address address;
 
     @Override
