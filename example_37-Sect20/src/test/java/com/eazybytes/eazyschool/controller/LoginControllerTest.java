@@ -26,7 +26,6 @@ class LoginControllerTest {
     void displayLoginPageOK() throws Exception {
         mockMvc.perform(get("/login"))
                 .andExpect(status().isOk())
-                .andExpect(model().attributeDoesNotExist("errorMessge"))
                 .andExpect(view().name("login.html"))
                 .andExpect(content().string(containsString("<h3 class=\"title-style\">LogIn</h3>")))
                 .andDo(print());
