@@ -1,22 +1,29 @@
 package com.eazybytes.eazyschool.model;
 
-import lombok.Data;
+import lombok.*;
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.*;
-import javax.validation.constraints.Email;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.util.Objects;
 
-@Data
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @Entity
 public class Address extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO,generator="native")
     @GenericGenerator(name = "native",strategy = "native")
-    private int addressId;
+    private Integer addressId;
 
     @NotBlank(message="Address1 must not be blank")
     @Size(min=5, message="Address1 must be at least 5 characters long")
@@ -36,5 +43,16 @@ public class Address extends BaseEntity{
     @Pattern(regexp="(^$|[0-9]{5})",message = "Zip Code must be 5 digits")
     private int zipCode;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        Address address = (Address) o;
+        return addressId != null && Objects.equals(addressId, address.addressId);
+    }
 
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }
