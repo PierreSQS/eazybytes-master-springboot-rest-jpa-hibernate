@@ -29,28 +29,27 @@ public class ContactService {
      * @return boolean
      */
     public boolean saveMessageDetails(Contact contact){
-        boolean isSaved = false;
         contact.setStatus(EazySchoolConstants.OPEN);
         Contact savedContact = contactRepository.save(contact);
-        if(null != savedContact && savedContact.getContactId()>0) {
-            isSaved = true;
-        }
-        return isSaved;
+        return (savedContact.getContactId()>0);
     }
 
     public List<Contact> findMsgsWithOpenStatus(){
         return contactRepository.findByStatus(EazySchoolConstants.OPEN);
     }
 
-    public boolean updateMsgStatus(int contactId){
-        boolean isUpdated = false;
-        Optional<Contact> contact = contactRepository.findById(contactId);
-        contact.ifPresent(contact1 -> contact1.setStatus(EazySchoolConstants.CLOSE));
-        Contact updatedContact = contactRepository.save(contact.get());
-        if(null != updatedContact && updatedContact.getUpdatedBy()!=null) {
-            isUpdated = true;
+    public boolean updateContactStatus(int contactId){
+        Optional<Contact> contactOpt = contactRepository.findById(contactId);
+
+        if (contactOpt.isPresent()){
+            Contact foundContact = contactOpt.get();
+            foundContact.setStatus(EazySchoolConstants.CLOSE);
+            contactRepository.save(foundContact);
+            return true;
+        } else {
+            return false;
         }
-        return isUpdated;
+
     }
 
 }

@@ -50,7 +50,7 @@ public class ContactController {
 
     @GetMapping("/closeMsg")
     public String closeMsg(@RequestParam int id) {
-        contactService.updateMsgStatus(id);
+        contactService.updateContactStatus(id);
         return "redirect:/displayMessages";
     }
 

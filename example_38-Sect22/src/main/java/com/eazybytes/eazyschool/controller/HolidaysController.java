@@ -1,7 +1,7 @@
 package com.eazybytes.eazyschool.controller;
 
 import com.eazybytes.eazyschool.model.Holiday;
-import com.eazybytes.eazyschool.repository.HolidaysRepository;
+import com.eazybytes.eazyschool.service.HolidayService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Slf4j
 @Controller
@@ -20,11 +19,12 @@ public class HolidaysController {
     public static final String FESTIVAL_ATTR = "festival";
     public static final String FEDERAL_ATTR = "federal";
 
-    private final HolidaysRepository holidaysRepository;
+    private final HolidayService holidaySrv;
 
-    public HolidaysController(HolidaysRepository holidaysRepository) {
-        this.holidaysRepository = holidaysRepository;
+    public HolidaysController(HolidayService holidaySrv) {
+        this.holidaySrv = holidaySrv;
     }
+
 
     @GetMapping("/holidays/{display}")
     public String displayHolidays(@PathVariable String display,Model model) {
@@ -37,7 +37,7 @@ public class HolidaysController {
             model.addAttribute(FESTIVAL_ATTR, true);
         }
 
-        List<Holiday> holidayList = holidaysRepository.findAll();
+        List<Holiday> holidayList = holidaySrv.listHolidays();
 
         Map<Holiday.Type, List<Holiday>> holydaysMap = holidayList.stream().collect(Collectors.groupingBy(Holiday::getType));
 
