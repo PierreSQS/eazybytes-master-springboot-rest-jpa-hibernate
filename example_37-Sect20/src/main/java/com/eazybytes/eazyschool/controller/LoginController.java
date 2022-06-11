@@ -31,7 +31,7 @@ public class LoginController {
         if (register != null) {
             errorMessage = "You registration successful. Login with registered credentials !!";
         }
-        model.addAttribute("errorMessge", errorMessage);
+        model.addAttribute("errorMessage", errorMessage);
         return "login.html";
     }
 
@@ -43,7 +43,5 @@ public class LoginController {
         }
         return "redirect:/login?logout=true";
     }
-
-
 
 }
