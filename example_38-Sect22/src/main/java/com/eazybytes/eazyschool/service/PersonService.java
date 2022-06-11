@@ -1,31 +1,30 @@
 package com.eazybytes.eazyschool.service;
 
 import com.eazybytes.eazyschool.constants.EazySchoolConstants;
-import com.eazybytes.eazyschool.model.Contact;
 import com.eazybytes.eazyschool.model.Person;
 import com.eazybytes.eazyschool.model.Roles;
-import com.eazybytes.eazyschool.repository.ContactRepository;
 import com.eazybytes.eazyschool.repository.PersonRepository;
 import com.eazybytes.eazyschool.repository.RolesRepository;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class PersonService {
 
-    @Autowired
-    private PersonRepository personRepository;
+    private final PersonRepository personRepository;
 
-    @Autowired
-    private RolesRepository rolesRepository;
+    private final RolesRepository rolesRepository;
+
+    public PersonService(PersonRepository personRepository, RolesRepository rolesRepository) {
+        this.personRepository = personRepository;
+        this.rolesRepository = rolesRepository;
+    }
 
     public boolean createNewPerson(Person person){
         boolean isSaved = false;
         Roles role = rolesRepository.getByRoleName(EazySchoolConstants.STUDENT_ROLE);
         person.setRoles(role);
         person = personRepository.save(person);
-        if (null != person && person.getPersonId() > 0)
+        if (person.getPersonId() > 0)
         {
             isSaved = true;
         }
