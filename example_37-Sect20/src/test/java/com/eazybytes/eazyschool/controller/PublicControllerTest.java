@@ -1,6 +1,8 @@
 package com.eazybytes.eazyschool.controller;
 
+import com.eazybytes.eazyschool.constants.EazySchoolConstants;
 import com.eazybytes.eazyschool.model.Person;
+import com.eazybytes.eazyschool.model.Roles;
 import com.eazybytes.eazyschool.service.PersonService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +17,7 @@ import org.springframework.util.MultiValueMap;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.core.StringContains.containsString;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -36,7 +39,7 @@ class PublicControllerTest {
     @MockBean
     PersonService personSrvMock;
 
-    Person person;
+    Person person, savedPerson;
 
 
     @BeforeEach
@@ -48,6 +51,19 @@ class PublicControllerTest {
         person.setMobileNumber("1234567890");
         person.setPwd("galerien");
         person.setConfirmPwd("galerien");
+
+        Roles roles = new Roles();
+        roles.setRoleName(EazySchoolConstants.STUDENT_ROLE);
+
+        savedPerson = new Person();
+        savedPerson.setPersonId(1);
+        savedPerson.setName("Pierrot");
+        savedPerson.setEmail("pierrot@gmail.com");
+        savedPerson.setConfirmEmail("pierrot@gmail.com");
+        savedPerson.setMobileNumber("1234567890");
+        savedPerson.setPwd("galerien");
+        savedPerson.setRoles(roles);
+        savedPerson.setConfirmPwd("galerien");
     }
 
     @Test
@@ -70,6 +86,8 @@ class PublicControllerTest {
         multiValueMap.add("confirmEmail",person.getConfirmEmail());
         multiValueMap.add("pwd",person.getPwd());
         multiValueMap.add("confirmPwd",person.getConfirmPwd());
+
+        given(personSrvMock.saveUser(any())).willReturn(savedPerson);
 
         mockMvc.perform(post("/public/createUser")
                         .params(multiValueMap)
