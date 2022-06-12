@@ -27,3 +27,13 @@ INSERT INTO `roles` (`role_name`,`created_at`, `created_by`)
 
 INSERT INTO `roles` (`role_name`,`created_at`, `created_by`)
   VALUES ('STUDENT',CURDATE(),'DBA');
+
+INSERT INTO `roles` (`role_name`,`created_at`, `created_by`)
+  VALUES ('STUDENT',CURDATE(),'DBA');
+
+INSERT INTO `person` (`name`,`email`,`pwd`,`mobile_number`,`created_at`, `created_by`, `role_id`)
+  VALUES ('user','user@eazyschool.com','12345','2323232323',CURDATE(),'DBA',2);
+
+INSERT INTO `person` (`name`,`email`,`pwd`,`mobile_number`,`created_at`, `created_by`, `role_id`)
+  VALUES ('admin','admin@eazyschool.com','54321','1212121212',CURDATE(),'DBA',1);
+
