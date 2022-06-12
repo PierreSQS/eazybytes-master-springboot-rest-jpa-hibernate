@@ -7,6 +7,8 @@ import com.eazybytes.eazyschool.repository.PersonRepository;
 import com.eazybytes.eazyschool.repository.RolesRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class PersonService {
 
@@ -21,8 +23,8 @@ public class PersonService {
 
     public boolean createNewPerson(Person person){
         boolean isSaved = false;
-        Roles role = rolesRepository.getByRoleName(EazySchoolConstants.STUDENT_ROLE);
-        person.setRoles(role);
+        List<Roles> roleList = rolesRepository.getByRoleName(EazySchoolConstants.STUDENT_ROLE);
+        person.setRoles(roleList.get(0));
         person = personRepository.save(person);
         if (person.getPersonId() > 0)
         {
