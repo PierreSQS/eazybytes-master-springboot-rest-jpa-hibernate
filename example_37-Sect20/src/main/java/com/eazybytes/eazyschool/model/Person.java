@@ -65,7 +65,7 @@ public class Person extends BaseEntity{
     @Transient
     private String confirmPwd;
 
-    @OneToOne(fetch = FetchType.EAGER,cascade = CascadeType.REFRESH,targetEntity = Roles.class)
+    @OneToOne(fetch = FetchType.EAGER,cascade = CascadeType.PERSIST,targetEntity = Roles.class)
     @JoinColumn(name = "role_id", referencedColumnName = "roleId", nullable = false)
     private Roles roles;
 
