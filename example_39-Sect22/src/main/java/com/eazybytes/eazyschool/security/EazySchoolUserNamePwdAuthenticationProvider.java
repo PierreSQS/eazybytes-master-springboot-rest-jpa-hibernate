@@ -10,17 +10,20 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
 public class EazySchoolUserNamePwdAuthenticationProvider implements AuthenticationProvider {
     private final PersonRepository personRepo;
 
-    public EazySchoolUserNamePwdAuthenticationProvider(PersonRepository personRepo) {
+    private final PasswordEncoder passwordEncoder;
+
+    public EazySchoolUserNamePwdAuthenticationProvider(PersonRepository personRepo, PasswordEncoder passwordEncoder) {
         this.personRepo = personRepo;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -30,10 +33,9 @@ public class EazySchoolUserNamePwdAuthenticationProvider implements Authenticati
 
         Person person = personRepo.findByEmail(username);
 
-        if (person != null && username.equals(person.getEmail()) && pwd.equals(person.getPwd())) {
-            List<Roles> authRolesList = new ArrayList<>();
-            authRolesList.add(person.getRoles());
-            return new UsernamePasswordAuthenticationToken(username,pwd,getGrantedAuthorities(authRolesList));
+        if (person != null && username.equals(person.getEmail()) && passwordEncoder.matches(pwd,person.getPwd())) {
+            List<Roles> authRolesList = List.of(person.getRoles());
+            return new UsernamePasswordAuthenticationToken(username,null,getGrantedAuthorities(authRolesList));
         } else {
             throw new BadCredentialsException("Invalid Credentials!!!");
         }
