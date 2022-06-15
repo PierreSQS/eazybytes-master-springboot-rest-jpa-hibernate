@@ -28,14 +28,14 @@ public class EazySchoolUserNamePwdAuthenticationProvider implements Authenticati
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        String username = authentication.getName();
+        String email = authentication.getName();
         String pwd = authentication.getCredentials().toString();
 
-        Person person = personRepo.findByEmail(username);
+        Person person = personRepo.findByEmail(email);
 
-        if (person != null && username.equals(person.getEmail()) && passwordEncoder.matches(pwd,person.getPwd())) {
+        if (person != null && email.equals(person.getEmail()) && passwordEncoder.matches(pwd,person.getPwd())) {
             List<Roles> authRolesList = List.of(person.getRoles());
-            return new UsernamePasswordAuthenticationToken(username,null,getGrantedAuthorities(authRolesList));
+            return new UsernamePasswordAuthenticationToken(email,null,getGrantedAuthorities(authRolesList));
         } else {
             throw new BadCredentialsException("Invalid Credentials!!!");
         }
