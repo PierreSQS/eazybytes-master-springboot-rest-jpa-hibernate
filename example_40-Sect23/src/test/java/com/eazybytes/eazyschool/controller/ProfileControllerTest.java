@@ -14,6 +14,7 @@ import java.util.Map;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -56,6 +57,7 @@ class ProfileControllerTest {
         MultiValueMap<String,String> multiValueMap = new LinkedMultiValueMap<>();
 
         mockMvc.perform(post("/updateProfile").sessionAttrs(stringPersonMap)
+                        .with(csrf())
                         .with(user("Mock User"))
                         .params(multiValueMap))
                 .andExpect(status().is3xxRedirection())
