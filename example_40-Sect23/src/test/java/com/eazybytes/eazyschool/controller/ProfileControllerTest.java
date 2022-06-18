@@ -4,10 +4,12 @@ import com.eazybytes.eazyschool.constants.EazySchoolConstants;
 import com.eazybytes.eazyschool.model.Address;
 import com.eazybytes.eazyschool.model.Person;
 import com.eazybytes.eazyschool.model.Roles;
+import com.eazybytes.eazyschool.repository.PersonRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -17,6 +19,8 @@ import java.util.Map;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -35,6 +39,9 @@ class ProfileControllerTest {
 
     @Autowired
     MockMvc mockMvc;
+
+    @MockBean
+    PersonRepository personRepoMock;
 
     @BeforeEach
     void setUp() {
@@ -106,6 +113,8 @@ class ProfileControllerTest {
                 .andExpect(model().attributeDoesNotExist("errormsg"))
                 .andExpect(view().name("redirect:/displayProfile"))
                 .andDo(print());
+
+        verify(personRepoMock).save(any());
     }
 
 }
