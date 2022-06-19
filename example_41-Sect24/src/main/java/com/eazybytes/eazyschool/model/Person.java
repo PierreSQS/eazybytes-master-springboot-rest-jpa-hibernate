@@ -70,6 +70,11 @@ public class Person extends BaseEntity{
     @JoinColumn(name = "address_id", referencedColumnName = "addressId")
     private Address address;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "class_id", referencedColumnName = "classId", nullable = true)
+    @ToString.Exclude
+    private EazyClass eazyClass;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
