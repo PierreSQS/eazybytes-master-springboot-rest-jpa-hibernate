@@ -1,6 +1,7 @@
 package com.eazybytes.eazyschool.controller;
 
 import com.eazybytes.eazyschool.model.EazyClass;
+import com.eazybytes.eazyschool.model.Person;
 import com.eazybytes.eazyschool.repository.EazyClassRepository;
 import com.eazybytes.eazyschool.repository.PersonRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,9 +15,16 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
+import static org.hamcrest.Matchers.not;
 import static org.hamcrest.core.StringContains.containsString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -27,6 +35,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class AdminControllerTest {
 
     List<EazyClass> eazyClassesMock;
+
+    Set<Person> students;
 
     @Autowired
     MockMvc mockMvc;
@@ -48,12 +58,23 @@ class AdminControllerTest {
         class2.setName("Java");
 
         eazyClassesMock = List.of(class1,class2);
-        given(eazyClassRepoMock.findAll()).willReturn(eazyClassesMock);
+
+        Person student1 = new Person();
+        student1.setName("Student1");
+
+        Person student2 = new Person();
+        student1.setName("Student2");
+
+        students = Set.of(student1,student2);
+
     }
 
     @Test
     @WithMockUser(username = "Mock Admin",roles = {"ADMIN"})
     void displayClasses() throws Exception {
+        // Given
+        given(eazyClassRepoMock.findAll()).willReturn(eazyClassesMock);
+
         mockMvc.perform(get("/admin/displayClasses"))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("eazyClass"))
@@ -77,5 +98,26 @@ class AdminControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/admin/displayClasses"))
                 .andDo(print());
+
+        verify(eazyClassRepoMock).save(any());
+    }
+
+    @Test
+    @WithMockUser(username = "Mock Admin", roles = {"ADMIN"})
+    void deleteClassWithClassesPresent() throws Exception {
+
+        EazyClass eazyClassMock = eazyClassesMock.get(0);
+        eazyClassMock.setPersons(students);
+
+        given(eazyClassRepoMock.findById(anyInt())).willReturn(Optional.of(eazyClassMock));
+
+        mockMvc.perform(get("/admin/deleteClass?id={id}",1))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(content().string(not(containsString("Look like you're lost"))))
+                .andExpect(view().name("redirect:/admin/displayClasses"))
+                .andDo(print());
+
+        verify(personRepoMock,times(2)).save(any());
+        verify(eazyClassRepoMock).deleteById(1);
     }
 }
