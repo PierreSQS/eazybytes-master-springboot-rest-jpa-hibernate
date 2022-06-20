@@ -1,17 +1,17 @@
 package com.eazybytes.eazyschool.controller;
 
 import com.eazybytes.eazyschool.model.EazyClass;
+import com.eazybytes.eazyschool.model.Person;
 import com.eazybytes.eazyschool.repository.EazyClassRepository;
 import com.eazybytes.eazyschool.repository.PersonRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @Slf4j
 @Controller
@@ -37,6 +37,35 @@ public class AdminController {
     @PostMapping("addNewClass")
     public String createClass(@ModelAttribute EazyClass eazyClass) {
         eazyClassRepo.save(eazyClass);
+        return "redirect:/admin/displayClasses";
+    }
+
+    @GetMapping("deleteClass")
+    public String deleteClass(@RequestParam("id") int classId){
+        Optional<EazyClass> classByIdOpt = eazyClassRepo.findById(classId);
+
+        // The EazyClass will always be present in the context!!!!!!
+        // Still Implemented in that way to avoid a Warning!!!
+        if (classByIdOpt.isPresent()) {
+            EazyClass foundClass = classByIdOpt.get();
+            Set<Person> students = foundClass.getPersons();
+            if (students != null) {
+                students.forEach(student -> {
+                    student.setEazyClass(null);
+                    personRepo.save(student);
+                } );
+            }
+        }
+// TO CHECK This code !!!!!!!!!!!!!!!
+//        classByIdOpt.ifPresent(eazyClass -> eazyClass.getPersons().forEach(person -> {
+//            person.setEazyClass(null); // Delete all Person, e.g. Student in the class
+//            personRepo.save(person);
+//        }));
+
+        // Then delete the class
+        eazyClassRepo.deleteById(classId);
+
+        log.info("########## deleteClass #################");
         return "redirect:/admin/displayClasses";
     }
 }
