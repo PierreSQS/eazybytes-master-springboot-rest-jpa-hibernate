@@ -104,7 +104,7 @@ class AdminControllerTest {
 
     @Test
     @WithMockUser(username = "Mock Admin", roles = {"ADMIN"})
-    void deleteClassWithClassesPresent() throws Exception {
+    void deleteClassWithStudents() throws Exception {
 
         EazyClass eazyClassMock = eazyClassesMock.get(0);
         eazyClassMock.setPersons(students);
@@ -120,4 +120,5 @@ class AdminControllerTest {
         verify(personRepoMock,times(2)).save(any());
         verify(eazyClassRepoMock).deleteById(1);
     }
+
 }
