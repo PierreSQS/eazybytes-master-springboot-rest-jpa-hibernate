@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -118,6 +119,27 @@ class AdminControllerTest {
                 .andDo(print());
 
         verify(personRepoMock,times(2)).save(any());
+        verify(eazyClassRepoMock).deleteById(1);
+    }
+
+    @Test
+    @WithMockUser(username = "Mock Admin", roles = {"ADMIN"})
+    void deleteClassWithoutStudents() throws Exception {
+
+        EazyClass eazyClassMock = eazyClassesMock.get(0);
+        // Looks like JPA is setting the Set<> of persons
+        // in the real Application to an empty Set for example new HashSet()
+        eazyClassMock.setPersons(new HashSet<>());
+
+        given(eazyClassRepoMock.findById(anyInt())).willReturn(Optional.of(eazyClassMock));
+
+        mockMvc.perform(get("/admin/deleteClass?id={id}",1))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(content().string(not(containsString("Look like you're lost"))))
+                .andExpect(view().name("redirect:/admin/displayClasses"))
+                .andDo(print());
+
+        verify(personRepoMock,times(0)).save(any());
         verify(eazyClassRepoMock).deleteById(1);
     }
 
