@@ -27,6 +27,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -143,4 +144,12 @@ class AdminControllerTest {
         verify(eazyClassRepoMock).deleteById(1);
     }
 
+    @Test
+    void displayStudents() throws Exception {
+        given(eazyClassRepoMock.findById(anyInt())).willReturn(Optional.of(eazyClassesMock.get(0)));
+        mockMvc.perform(get("/admin/displayStudents?classId={id}",1).with(user("admin@eazyschool.com").roles("ADMIN")))
+                .andExpect(status().isOk())
+                .andExpect(content().string(not(containsString("oops..."))))
+                .andDo(print());
+    }
 }
