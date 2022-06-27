@@ -59,7 +59,7 @@ public class AdminController {
 
     @GetMapping("displayStudents")
     public ModelAndView displayStudents(@RequestParam int classId) {
-        ModelAndView modelAndView = new ModelAndView("Students.html");
+        ModelAndView modelAndView = new ModelAndView("students.html");
         Optional<EazyClass> classByIDOpt = eazyClassRepo.findById(classId);
         classByIDOpt.ifPresent(eazyClass -> modelAndView.addObject("eazyClass", eazyClass));
         modelAndView.addObject("person",new Person());
