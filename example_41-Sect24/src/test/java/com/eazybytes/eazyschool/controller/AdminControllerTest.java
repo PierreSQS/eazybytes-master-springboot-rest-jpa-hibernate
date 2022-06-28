@@ -152,4 +152,14 @@ class AdminControllerTest {
                 .andExpect(content().string(not(containsString("oops..."))))
                 .andDo(print());
     }
+
+    @Test
+    void addStudents() throws Exception {
+        mockMvc.perform(post("/admin/addStudent")
+                            .with(user("Mock Admin").roles("ADMIN"))
+                            .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(content().string(not(containsString("oops..."))))
+                .andDo(print());
+    }
 }
