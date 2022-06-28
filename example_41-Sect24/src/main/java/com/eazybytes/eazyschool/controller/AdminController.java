@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Slf4j
 @Controller
@@ -93,13 +95,18 @@ public class AdminController {
         foundStudent.setEazyClass(eazyClass);
 
         // add the student to the class
-        eazyClass.getPersons().add(foundStudent);
+        Set<Person> students = eazyClass.getPersons();
+        if (students == null) {
+            students = new HashSet<>(); // necessary for the test, otherwise NPE will be thrown!!
+        }
+
+        students.add(foundStudent);
 
         // and save the class, thus automatically
         // the student because the cascade "Persist"
         eazyClassRepo.save(eazyClass);
 
-        return "redirect:/admin/displayStudents"+eazyClass.getClassId();
+        return "redirect:/admin/displayStudents?classId="+eazyClass.getClassId();
     }
 
 }
