@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,6 +18,8 @@ import java.util.Optional;
 @Controller
 @RequestMapping("admin")
 public class AdminController {
+
+    public static final String EAZY_CLASS_ATTR = "eazyClass";
 
     private final EazyClassRepository eazyClassRepo;
     private final PersonRepository personRepo;
@@ -29,7 +32,7 @@ public class AdminController {
     @GetMapping("displayClasses")
     public String displayClasses(Model model) {
         List<EazyClass> eazyClasses = eazyClassRepo.findAll();
-        model.addAttribute("eazyClass",new EazyClass());
+        model.addAttribute(EAZY_CLASS_ATTR,new EazyClass());
         model.addAttribute("eazyClasses",eazyClasses);
         return "classes.html";
     }
@@ -58,12 +61,45 @@ public class AdminController {
     }
 
     @GetMapping("displayStudents")
-    public ModelAndView displayStudents(@RequestParam int classId) {
+    public ModelAndView displayStudents(@RequestParam int classId, HttpSession httpSession,
+                                        @RequestParam(required = false) String error) {
+        String errorMessage = null;
         ModelAndView modelAndView = new ModelAndView("students.html");
         Optional<EazyClass> classByIDOpt = eazyClassRepo.findById(classId);
-        classByIDOpt.ifPresent(eazyClass -> modelAndView.addObject("eazyClass", eazyClass));
+        classByIDOpt.ifPresent(eazyClass -> {
+            modelAndView.addObject(EAZY_CLASS_ATTR, eazyClass);
+            httpSession.setAttribute(EAZY_CLASS_ATTR, eazyClass);
+        });
         modelAndView.addObject("person",new Person());
+
+        if (error != null) {
+            errorMessage = "Invalid email entered";
+            modelAndView.addObject("errorMessage",errorMessage);
+
+        }
+
         return modelAndView;
+    }
+
+    @PostMapping("addStudent")
+    public String addStudents(Person student, HttpSession httpSession) {
+        EazyClass eazyClass = (EazyClass) httpSession.getAttribute(EAZY_CLASS_ATTR);
+        Person foundStudent = personRepo.findByEmail(student.getEmail());
+        if (foundStudent == null) {
+            return "redirect:/admin/displayStudents?classId="+eazyClass.getClassId()+"&error=true";
+        }
+
+        // add the class to the student
+        foundStudent.setEazyClass(eazyClass);
+
+        // add the student to the class
+        eazyClass.getPersons().add(foundStudent);
+
+        // and save the class, thus automatically
+        // the student because the cascade "Persist"
+        eazyClassRepo.save(eazyClass);
+
+        return "redirect:/admin/displayStudents"+eazyClass.getClassId();
     }
 
 }
