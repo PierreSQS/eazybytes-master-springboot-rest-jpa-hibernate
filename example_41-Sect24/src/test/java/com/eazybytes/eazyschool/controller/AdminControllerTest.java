@@ -154,11 +154,13 @@ class AdminControllerTest {
     }
 
     @Test
-    void addStudents() throws Exception {
+    void addStudentsWithoutEmailEntered() throws Exception {
         mockMvc.perform(post("/admin/addStudent")
-                            .with(user("Mock Admin").roles("ADMIN"))
-                            .with(csrf()))
+                        .with(user("Mock Admin").roles("ADMIN"))
+                        .with(csrf())
+                        .sessionAttr("eazyClass",eazyClassesMock.get(0)))
                 .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/admin/displayStudents?classId=2&error=true"))
                 .andExpect(content().string(not(containsString("oops..."))))
                 .andDo(print());
     }
