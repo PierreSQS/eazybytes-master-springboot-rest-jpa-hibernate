@@ -57,7 +57,7 @@ class AdminControllerTest {
         class1.setName("Music");
 
         EazyClass class2 = new EazyClass();
-        class1.setClassId(2);
+        class2.setClassId(2);
         class2.setName("Java");
 
         eazyClassesMock = List.of(class1,class2);
@@ -66,7 +66,7 @@ class AdminControllerTest {
         student1.setName("Student1");
 
         Person student2 = new Person();
-        student1.setName("Student2");
+        student2.setName("Student2");
 
         students = Set.of(student1,student2);
 
@@ -159,7 +159,7 @@ class AdminControllerTest {
         mockMvc.perform(post("/admin/addStudent")
                         .with(user("Mock Admin").roles("ADMIN"))
                         .with(csrf())
-                        .sessionAttr("eazyClass",eazyClassesMock.get(0)))
+                        .sessionAttr("eazyClass",eazyClassesMock.get(1)))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/admin/displayStudents?classId=2&error=true"))
                 .andExpect(content().string(not(containsString("oops..."))))
@@ -187,7 +187,7 @@ class AdminControllerTest {
                         .params(multiValueMap)
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/admin/displayStudents?classId=2"))
+                .andExpect(redirectedUrl("/admin/displayStudents?classId=1"))
                 .andExpect(content().string(not(containsString("oops..."))))
                 .andDo(print());
     }
