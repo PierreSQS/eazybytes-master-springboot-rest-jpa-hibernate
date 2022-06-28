@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
@@ -164,4 +165,31 @@ class AdminControllerTest {
                 .andExpect(content().string(not(containsString("oops..."))))
                 .andDo(print());
     }
+
+    @Test
+    void addStudentsEmailEntered() throws Exception {
+        // Given
+        Person student = students.stream().toList().get(0);
+        student.setPersonId(1);
+        student.setEmail("student1@gmail.com");
+
+        EazyClass classMock = eazyClassesMock.get(0);
+
+        MultiValueMap<String,String> multiValueMap = new LinkedMultiValueMap<>();
+        multiValueMap.add("email", student.getEmail());
+
+        given(personRepoMock.findByEmail(any())).willReturn(student);
+
+        mockMvc.perform(post("/admin/addStudent")
+                        .with(user("Mock Admin").roles("ADMIN"))
+                        .with(csrf())
+                        .sessionAttr("eazyClass",classMock)
+                        .params(multiValueMap)
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/admin/displayStudents?classId=2"))
+                .andExpect(content().string(not(containsString("oops..."))))
+                .andDo(print());
+    }
+
 }
