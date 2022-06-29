@@ -10,9 +10,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
-import java.util.Map;
-
-import static java.util.stream.Collectors.groupingBy;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Slf4j
 @Controller
@@ -31,12 +30,15 @@ public class HolidaysController {
         }else if(null != display && display.equals("festival")){
             model.addAttribute("festival",true);
         }
-
-        List<Holiday> holidayList = holidaysSrv.listHolidays();
-
-        Map<Holiday.Type, List<Holiday>> holidaysByType =
-                holidayList.stream().collect(groupingBy(Holiday::getType));
-        holidaysByType.forEach((type, holidays) -> model.addAttribute(type.toString(),holidays));
+        Iterable<Holiday> holidays = holidaysSrv.listHolidays();
+        List<Holiday> holidayList = StreamSupport
+                .stream(holidays.spliterator(), false)
+                .collect(Collectors.toList());
+        Holiday.Type[] types = Holiday.Type.values();
+        for (Holiday.Type type : types) {
+            model.addAttribute(type.toString(),
+                    (holidayList.stream().filter(holiday -> holiday.getType().equals(type)).collect(Collectors.toList())));
+        }
         return "holidays.html";
     }
 
