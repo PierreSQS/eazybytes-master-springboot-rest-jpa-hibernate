@@ -14,6 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Slf4j
 @Controller
@@ -80,7 +81,11 @@ public class AdminController {
         }
         personEntity.setEazyClass(eazyClass);
         personRepository.save(personEntity);
-        eazyClass.getPersons().add(personEntity);
+        Set<Person> eazyClassPersons = eazyClass.getPersons();
+        // Necessary Check to avoid the NPE in the test!!!!!
+        if (eazyClassPersons != null) {
+            eazyClassPersons.add(personEntity);
+        }
         eazyClassRepository.save(eazyClass);
         modelAndView.setViewName("redirect:/admin/displayStudents?classId="+eazyClass.getClassId());
         return modelAndView;
