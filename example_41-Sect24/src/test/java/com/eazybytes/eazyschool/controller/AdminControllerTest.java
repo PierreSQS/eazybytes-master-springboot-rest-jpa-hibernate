@@ -208,7 +208,6 @@ class AdminControllerTest {
                 .andExpect(redirectedUrl("/admin/displayStudents/?classId=1"))
                 .andDo(print());
 
-        verify(personRepoMock).deleteById(anyInt());
         verify(eazyClassRepoMock).save(any());
     }
 }

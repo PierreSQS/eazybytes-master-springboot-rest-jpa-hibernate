@@ -122,10 +122,9 @@ public class AdminController {
                 persons = new HashSet<>();
             }
             persons.remove(person);
+            person.setEazyClass(null);
             eazyClassRepo.save(eazyClass);
         });
-
-        personRepo.deleteById(personID);
 
         return "redirect:/admin/displayStudents/?classId="+eazyClass.getClassId();
     }
