@@ -117,12 +117,12 @@ public class AdminController {
         Optional<Person> personToDeleteOpt = personRepo.findById(personID);
         personToDeleteOpt.ifPresent(person -> {
             eazyClass.getPersons().remove(person);
-            personRepo.deleteById(personID);
+            eazyClassRepo.save(eazyClass);
         });
 
-        eazyClassRepo.save(eazyClass);
+        personRepo.deleteById(personID);
 
-        return "redirect:/admin/displayStudents/?classId="+personID;
+        return "redirect:/admin/displayStudents/?classId="+eazyClass.getClassId();
     }
 
 }
