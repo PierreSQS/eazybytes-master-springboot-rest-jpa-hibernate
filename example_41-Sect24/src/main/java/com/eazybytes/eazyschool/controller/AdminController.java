@@ -116,7 +116,12 @@ public class AdminController {
 
         Optional<Person> personToDeleteOpt = personRepo.findById(personID);
         personToDeleteOpt.ifPresent(person -> {
-            eazyClass.getPersons().remove(person);
+            Set<Person> persons = eazyClass.getPersons();
+            // Necessary for the test which doesn't the students e.g. Set<Person>
+            if (persons == null) {
+                persons = new HashSet<>();
+            }
+            persons.remove(person);
             eazyClassRepo.save(eazyClass);
         });
 

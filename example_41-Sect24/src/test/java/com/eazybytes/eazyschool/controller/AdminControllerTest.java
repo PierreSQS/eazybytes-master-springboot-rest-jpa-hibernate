@@ -194,12 +194,21 @@ class AdminControllerTest {
     @Test
     @WithMockUser(username = "Mock Admin",roles = {"ADMIN"})
     void deleteStudent() throws Exception {
+        // Given
+        List<Person> studentsMock = students.stream().toList();
+        given(personRepoMock.findById(anyInt())).willReturn(Optional.of(studentsMock.get(0)));
+
+        EazyClass classMock = eazyClassesMock.get(0);
+
+        // When, Then
         mockMvc.perform(get("/admin/deleteStudent/?personId={id}",1)
-                        .with(csrf()))
+                        .with(csrf())
+                        .sessionAttr("eazyClass",classMock))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/admin/displayStudents/?classId=1"))
                 .andDo(print());
 
         verify(personRepoMock).deleteById(anyInt());
+        verify(eazyClassRepoMock).save(any());
     }
 }
