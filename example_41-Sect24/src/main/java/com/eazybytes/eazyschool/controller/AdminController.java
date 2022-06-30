@@ -109,4 +109,20 @@ public class AdminController {
         return "redirect:/admin/displayStudents?classId="+eazyClass.getClassId();
     }
 
+    @GetMapping("deleteStudent")
+    public String deleteStudent(@RequestParam("personId") int personID, HttpSession httpSession) {
+
+        EazyClass eazyClass = (EazyClass) httpSession.getAttribute(EAZY_CLASS_ATTR);
+
+        Optional<Person> personToDeleteOpt = personRepo.findById(personID);
+        personToDeleteOpt.ifPresent(person -> {
+            eazyClass.getPersons().remove(person);
+            personRepo.deleteById(personID);
+        });
+
+        eazyClassRepo.save(eazyClass);
+
+        return "redirect:/admin/displayStudents/?classId="+personID;
+    }
+
 }

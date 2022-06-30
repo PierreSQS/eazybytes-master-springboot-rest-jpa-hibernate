@@ -29,8 +29,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -192,4 +191,15 @@ class AdminControllerTest {
                 .andDo(print());
     }
 
+    @Test
+    @WithMockUser(username = "Mock Admin",roles = {"ADMIN"})
+    void deleteStudent() throws Exception {
+        mockMvc.perform(get("/admin/deleteStudent/?personId={id}",1)
+                        .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/admin/displayStudents/?classId=1"))
+                .andDo(print());
+
+        verify(personRepoMock).deleteById(anyInt());
+    }
 }
