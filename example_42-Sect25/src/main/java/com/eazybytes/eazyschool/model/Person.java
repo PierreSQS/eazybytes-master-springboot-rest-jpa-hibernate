@@ -10,7 +10,9 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -78,6 +80,12 @@ public class Person extends BaseEntity{
     @JoinColumn(name = "class_id", referencedColumnName = "classId")
     @ToString.Exclude
     private EazyClass eazyClass;
+
+    @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.PERSIST)
+    @JoinTable(name = "person_courses",
+            joinColumns = {@JoinColumn(name = "person_id",referencedColumnName = "personId")},
+            inverseJoinColumns = {@JoinColumn(name = "course_id",referencedColumnName = "courseId")})
+    private Set<Courses> courses = new HashSet<>(); // This initialization can be helpfully for the Tests!!!
 
     @Override
     public boolean equals(Object o) {
