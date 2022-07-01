@@ -1,7 +1,9 @@
 package com.eazybytes.eazyschool.controller;
 
+import com.eazybytes.eazyschool.model.Course;
 import com.eazybytes.eazyschool.model.EazyClass;
 import com.eazybytes.eazyschool.model.Person;
+import com.eazybytes.eazyschool.repository.CourseRepository;
 import com.eazybytes.eazyschool.repository.EazyClassRepository;
 import com.eazybytes.eazyschool.repository.PersonRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,7 +40,9 @@ class AdminControllerTest {
 
     List<EazyClass> eazyClassesMock;
 
-    Set<Person> students;
+    List<Course> eazyCoursesMock;
+
+    Set<Person> studentsMock;
 
     @Autowired
     MockMvc mockMvc;
@@ -49,8 +53,12 @@ class AdminControllerTest {
     @MockBean
     PersonRepository personRepoMock;
 
+    @MockBean
+    CourseRepository courseRepoMock;
+
     @BeforeEach
     void setUp() {
+        // Setting the Mock Classes
         EazyClass class1 = new EazyClass();
         class1.setClassId(1);
         class1.setName("Music");
@@ -61,13 +69,27 @@ class AdminControllerTest {
 
         eazyClassesMock = List.of(class1,class2);
 
-        Person student1 = new Person();
-        student1.setName("Student1");
+        // Setting the Mock Students
+        Person studentMock1 = new Person();
+        studentMock1.setName("Student1");
 
-        Person student2 = new Person();
-        student2.setName("Student2");
+        Person studentMock2 = new Person();
+        studentMock2.setName("Student2");
 
-        students = Set.of(student1,student2);
+        studentsMock = Set.of(studentMock1,studentMock2);
+
+        // Setting the Mock Courses
+        Course course1 = new Course();
+        course1.setCourseId(1);
+        course1.setName("Music");
+        course1.setFees("30€");
+
+        Course course2 = new Course();
+        course2.setCourseId(2);
+        course2.setName("Yoga");
+        course2.setFees("25€");
+
+        eazyCoursesMock = List.of(course1, course2);
 
     }
 
@@ -109,7 +131,7 @@ class AdminControllerTest {
     void deleteClassWithStudents() throws Exception {
 
         EazyClass eazyClassMock = eazyClassesMock.get(0);
-        eazyClassMock.setPersons(students);
+        eazyClassMock.setPersons(studentsMock);
 
         given(eazyClassRepoMock.findById(anyInt())).willReturn(Optional.of(eazyClassMock));
 
@@ -168,7 +190,7 @@ class AdminControllerTest {
     @Test
     void addStudentsEmailEntered() throws Exception {
         // Given
-        Person student = students.stream().toList().get(0);
+        Person student = studentsMock.stream().toList().get(0);
         student.setPersonId(1);
         student.setEmail("student1@gmail.com");
 
@@ -195,7 +217,7 @@ class AdminControllerTest {
     @WithMockUser(username = "Mock Admin",roles = {"ADMIN"})
     void deleteStudent() throws Exception {
         // Given
-        List<Person> studentsMock = students.stream().toList();
+        List<Person> studentsMock = this.studentsMock.stream().toList();
         given(personRepoMock.findById(anyInt())).willReturn(Optional.of(studentsMock.get(0)));
 
         EazyClass classMock = eazyClassesMock.get(0);
@@ -209,5 +231,22 @@ class AdminControllerTest {
                 .andDo(print());
 
         verify(eazyClassRepoMock).save(any());
+    }
+
+    @Test
+    void displayCourses() throws Exception {
+        // Given
+        given(courseRepoMock.findAll()).willReturn(eazyCoursesMock);
+
+        // When and Then
+        mockMvc.perform(get("/admin/displayCourses")
+                        .with(user("Mock Admin").roles("ADMIN")))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("course"))
+                .andExpect(model().attributeExists("courses"))
+                .andExpect(view().name("courses_secure.html"))
+                .andExpect(content().string(containsString("EazySchool Course Details<")))
+                .andExpect(content().string(containsString("<td>Music</td>")))
+                .andDo(print());
     }
 }
