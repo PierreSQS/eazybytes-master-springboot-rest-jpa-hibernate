@@ -2,6 +2,7 @@ package com.eazybytes.eazyschool.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -10,6 +11,7 @@ import java.util.Set;
 
 @Getter
 @Setter
+@ToString
 @Entity
 @Table(name = "class")
 public class EazyClass extends BaseEntity {
@@ -24,5 +26,6 @@ public class EazyClass extends BaseEntity {
 
     @OneToMany(mappedBy = "eazyClass", fetch = FetchType.LAZY,
             cascade = CascadeType.PERSIST,targetEntity = Person.class)
+    @ToString.Exclude
     private Set<Person> persons;
 }
