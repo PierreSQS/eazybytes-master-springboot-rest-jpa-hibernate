@@ -141,4 +141,11 @@ public class AdminController {
         return "courses_secure.html";
     }
 
+    @PostMapping("addNewCourse")
+    public ModelAndView addNewCourse(Course course) {
+        ModelAndView modelAndView = new ModelAndView("redirect:/admin/displayCourses");
+        courseRepo.save(course);
+        return modelAndView;
+    }
+
 }

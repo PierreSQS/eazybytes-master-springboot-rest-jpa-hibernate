@@ -249,4 +249,23 @@ class AdminControllerTest {
                 .andExpect(content().string(containsString("<td>Music</td>")))
                 .andDo(print());
     }
+
+    @Test
+    @WithMockUser(username = "Mock Admin",roles = {"ADMIN"})
+    void addNewCourse() throws Exception {
+
+        // Given
+        MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>();
+        Course course = eazyCoursesMock.get(0);
+        multiValueMap.add("name", course.getName());
+        multiValueMap.add("fees",course.getFees());
+
+        // When Then
+        mockMvc.perform((post("/admin/addNewCourse").with(csrf())).params(multiValueMap))
+                .andExpect(status().is3xxRedirection())
+                .andDo(print());
+
+        verify(courseRepoMock).save(any());
+
+    }
 }
