@@ -11,7 +11,6 @@ import java.util.Set;
 public class Courses extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "course_id", nullable = false)
     private Integer courseId;
 
     private String name;

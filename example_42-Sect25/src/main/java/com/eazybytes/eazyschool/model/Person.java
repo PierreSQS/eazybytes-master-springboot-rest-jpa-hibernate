@@ -84,7 +84,7 @@ public class Person extends BaseEntity{
     @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.PERSIST)
     @JoinTable(name = "person_courses",
             joinColumns = {@JoinColumn(name = "person_id",referencedColumnName = "personId")},
-            inverseJoinColumns = {@JoinColumn(name = "course_id",referencedColumnName = "course_id")})
+            inverseJoinColumns = {@JoinColumn(name = "course_id",referencedColumnName = "courseId")})
     private Set<Courses> courses = new HashSet<>(); // This initialization can be helpfully for the Tests!!!
 
     @Override
