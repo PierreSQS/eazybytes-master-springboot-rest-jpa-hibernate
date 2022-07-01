@@ -1,7 +1,9 @@
 package com.eazybytes.eazyschool.controller;
 
+import com.eazybytes.eazyschool.model.Course;
 import com.eazybytes.eazyschool.model.EazyClass;
 import com.eazybytes.eazyschool.model.Person;
+import com.eazybytes.eazyschool.repository.CourseRepository;
 import com.eazybytes.eazyschool.repository.EazyClassRepository;
 import com.eazybytes.eazyschool.repository.PersonRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -25,10 +27,12 @@ public class AdminController {
 
     private final EazyClassRepository eazyClassRepo;
     private final PersonRepository personRepo;
+    private final CourseRepository courseRepo;
 
-    public AdminController(EazyClassRepository eazyClassRepo, PersonRepository personRepo) {
+    public AdminController(EazyClassRepository eazyClassRepo, PersonRepository personRepo, CourseRepository courseRepo) {
         this.eazyClassRepo = eazyClassRepo;
         this.personRepo = personRepo;
+        this.courseRepo = courseRepo;
     }
 
     @GetMapping("displayClasses")
@@ -127,6 +131,14 @@ public class AdminController {
         });
 
         return "redirect:/admin/displayStudents/?classId="+eazyClass.getClassId();
+    }
+
+    @GetMapping("displayCourses")
+    public String displayCourses(Model model) {
+        List<Course> coursesForStudent = courseRepo.findAll();
+        model.addAttribute("courses",coursesForStudent);
+        model.addAttribute("course",new Course());
+        return "courses_secure.html";
     }
 
 }
