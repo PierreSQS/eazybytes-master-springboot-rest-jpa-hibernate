@@ -65,7 +65,7 @@ public class AdminController {
     @GetMapping("displayStudents")
     public ModelAndView displayStudents(@RequestParam int classId, HttpSession httpSession,
                                         @RequestParam(required = false) String error) {
-        String errorMessage = null;
+        String errorMessage;
         ModelAndView modelAndView = new ModelAndView("students.html");
         Optional<EazyClass> classByIDOpt = eazyClassRepo.findById(classId);
         classByIDOpt.ifPresent(eazyClass -> {
