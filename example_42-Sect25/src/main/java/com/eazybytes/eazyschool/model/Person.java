@@ -82,10 +82,10 @@ public class Person extends BaseEntity{
     private EazyClass eazyClass;
 
     @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.PERSIST)
-    @JoinTable(name = "person_courses",
+    @JoinTable(name = "person_course",
             joinColumns = {@JoinColumn(name = "person_id",referencedColumnName = "personId")},
             inverseJoinColumns = {@JoinColumn(name = "course_id",referencedColumnName = "courseId")})
-    private Set<Courses> courses = new HashSet<>(); // This initialization can be helpfully for the Tests!!!
+    private Set<Course> courses = new HashSet<>(); // This initialization can be helpfully for the Tests!!!
 
     @Override
     public boolean equals(Object o) {

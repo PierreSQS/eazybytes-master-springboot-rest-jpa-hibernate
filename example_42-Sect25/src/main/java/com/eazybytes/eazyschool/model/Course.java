@@ -13,7 +13,7 @@ import java.util.Set;
 @ToString
 @RequiredArgsConstructor
 @Entity
-public class Courses extends BaseEntity{
+public class Course extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer courseId;
@@ -30,7 +30,7 @@ public class Courses extends BaseEntity{
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        Courses courses = (Courses) o;
+        Course courses = (Course) o;
         return courseId != null && Objects.equals(courseId, courses.courseId);
     }
 
