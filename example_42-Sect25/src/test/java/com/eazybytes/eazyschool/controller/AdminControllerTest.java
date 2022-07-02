@@ -268,4 +268,17 @@ class AdminControllerTest {
         verify(courseRepoMock).save(any());
 
     }
+
+    @Test
+    @WithMockUser(username = "Mock Admin",roles = {"ADMIN"})
+    void viewStudent() throws Exception {
+        // Given
+        given(courseRepoMock.findById(anyInt())).willReturn(Optional.ofNullable(eazyCoursesMock.get(0)));
+        mockMvc.perform(get("/admin/viewStudents").param("id","1"))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("course"))
+                .andExpect(view().name("course_students.html"))
+                .andExpect(content().string(not(containsString("oops..."))))
+                .andDo(print());
+    }
 }

@@ -148,4 +148,15 @@ public class AdminController {
         return modelAndView;
     }
 
+    @GetMapping("viewStudents")
+    public String viewStudent(Model model, @RequestParam("id") Integer courseID) {
+        Optional<Course> foundCourseOpt = courseRepo.findById(courseID);
+        foundCourseOpt.ifPresent(course -> {
+            model.addAttribute("course",course);
+            model.addAttribute("person",new Person());
+        });
+
+        return "course_students.html";
+    }
+
 }
