@@ -24,7 +24,7 @@ public class Course extends BaseEntity{
 
     @ManyToMany(mappedBy = "courses", fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @ToString.Exclude
-    Set<Person> person = new HashSet<>(); // This initialization can be helpfully for the Tests!!!
+    private Set<Person> persons = new HashSet<>(); // This initialization can be helpfully for the Tests!!!
 
     @Override
     public boolean equals(Object o) {
