@@ -24,8 +24,7 @@ import java.util.Set;
 
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.core.StringContains.containsString;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -72,9 +71,14 @@ class AdminControllerTest {
         // Setting the Mock Students
         Person studentMock1 = new Person();
         studentMock1.setName("Student1");
+        studentMock1.setPersonId(1);
+        studentMock1.setEmail("student1@gmail.com");
+
 
         Person studentMock2 = new Person();
         studentMock2.setName("Student2");
+        studentMock2.setPersonId(2);
+        studentMock2.setEmail("student2@gmail.com");
 
         studentsMock = Set.of(studentMock1,studentMock2);
 
@@ -191,8 +195,6 @@ class AdminControllerTest {
     void addStudentsEmailEntered() throws Exception {
         // Given
         Person student = studentsMock.stream().toList().get(0);
-        student.setPersonId(1);
-        student.setEmail("student1@gmail.com");
 
         EazyClass classMock = eazyClassesMock.get(0);
 
@@ -279,6 +281,37 @@ class AdminControllerTest {
                 .andExpect(model().attributeExists("course"))
                 .andExpect(view().name("course_students.html"))
                 .andExpect(content().string(not(containsString("oops..."))))
+                .andDo(print());
+    }
+
+    @Test
+    void addStudentToCourseNoEmailEntered() throws Exception {
+        mockMvc.perform(post("/admin/addStudentToCourse")
+                        .with(user("Mock ADMIN").roles("ADMIN"))
+                        .with(csrf())
+                        .sessionAttr("course",eazyCoursesMock.get(0)))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/admin/viewStudents/?id=1&error=true"))
+                .andDo(print());
+    }
+
+    @Test
+    void addStudentToCourseWithEmailEntered() throws Exception {
+        List<Person> students = studentsMock.stream().toList();
+        Person foundStudent = students.get(0);
+
+        Course sessionAttrCourse = eazyCoursesMock.get(0);
+
+        given(personRepoMock.findByEmail(anyString())).willReturn(foundStudent);
+
+        mockMvc.perform(post("/admin/addStudentToCourse")
+                        .with(user("Mock ADMIN").roles("ADMIN"))
+                        .with(csrf())
+                        .sessionAttr("course", sessionAttrCourse)
+                        .param("email", foundStudent.getEmail())
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/admin/viewStudents/?id="+sessionAttrCourse.getCourseId()))
                 .andDo(print());
     }
 }

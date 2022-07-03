@@ -149,14 +149,42 @@ public class AdminController {
     }
 
     @GetMapping("viewStudents")
-    public String viewStudent(Model model, @RequestParam("id") Integer courseID) {
+    public String viewStudent(Model model, @RequestParam("id") Integer courseID, HttpSession httpSession, String error) {
+        String errorMessage;
         Optional<Course> foundCourseOpt = courseRepo.findById(courseID);
         foundCourseOpt.ifPresent(course -> {
             model.addAttribute("course",course);
             model.addAttribute("person",new Person());
+            httpSession.setAttribute("course",course);
         });
 
+        if (error != null) {
+            errorMessage = "Invalid email entered";
+            model.addAttribute("errorMessage",errorMessage);
+        }
+
         return "course_students.html";
+    }
+
+    @PostMapping("addStudentToCourse")
+    ModelAndView addStudentToCourse(Person person, HttpSession httpSession) {
+        Course course = (Course) httpSession.getAttribute("course");
+        Person foundStudent = personRepo.findByEmail(person.getEmail());
+        if (foundStudent == null) {
+            return new ModelAndView("redirect:/admin/viewStudents/?id="+course.getCourseId()+"&error=true");
+        }
+
+        // link the course to the student
+        course.getPersons().add(foundStudent);
+        // link the student to the course
+        foundStudent.getCourses().add(course);
+
+        // save the student in the DB
+        // since we have the cascade methode CASCADE.PERSIST
+        // also the course will be saved
+        personRepo.save(foundStudent);
+
+        return new ModelAndView("redirect:/admin/viewStudents/?id="+course.getCourseId());
     }
 
 }
