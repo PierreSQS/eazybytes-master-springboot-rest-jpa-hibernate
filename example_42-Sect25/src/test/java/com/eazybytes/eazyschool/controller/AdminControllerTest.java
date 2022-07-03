@@ -26,8 +26,7 @@ import static org.hamcrest.Matchers.not;
 import static org.hamcrest.core.StringContains.containsString;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -70,14 +69,14 @@ class AdminControllerTest {
 
         // Setting the Mock Students
         Person studentMock1 = new Person();
-        studentMock1.setName("Student1");
         studentMock1.setPersonId(1);
+        studentMock1.setName("Student1");
         studentMock1.setEmail("student1@gmail.com");
 
 
         Person studentMock2 = new Person();
-        studentMock2.setName("Student2");
         studentMock2.setPersonId(2);
+        studentMock2.setName("Student2");
         studentMock2.setEmail("student2@gmail.com");
 
         studentsMock = Set.of(studentMock1,studentMock2);
@@ -313,5 +312,25 @@ class AdminControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/admin/viewStudents/?id="+sessionAttrCourse.getCourseId()))
                 .andDo(print());
+
+        verify(personRepoMock).save(foundStudent);
+    }
+
+    @Test
+    @WithMockUser(username = "Mock Admin",roles = {"ADMIN"})
+    void deleteStudentFromCourse() throws Exception {
+        // Given
+        Person studentToDelete = studentsMock.stream().toList().get(0);
+        Integer personId = studentToDelete.getPersonId();
+        given(personRepoMock.findById(personId)).willReturn(Optional.of(studentToDelete));
+
+        // When, Then
+        mockMvc.perform(get("/admin/deleteStudentFromCourse?personId={id}", personId)
+                        .with(csrf())
+                        .sessionAttr("course",eazyCoursesMock.get(0)))
+                .andExpect(status().is3xxRedirection())
+                .andDo(print());
+
+        verify(personRepoMock).save(any());
     }
 }
