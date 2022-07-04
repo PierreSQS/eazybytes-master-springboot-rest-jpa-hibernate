@@ -184,6 +184,10 @@ public class AdminController {
         // also the course will be saved
         personRepo.save(foundStudent);
 
+        // save the updated Student in the HttpSession
+        // (with the courses) for the Student Dashboard
+        httpSession.setAttribute("person",foundStudent);
+
         return new ModelAndView("redirect:/admin/viewStudents/?id="+course.getCourseId());
     }
 
