@@ -50,6 +50,8 @@ class DashboardControllerTest {
                 .andExpect(model().attribute("roles",equalTo("[ROLE_USER]")))
                 .andExpect(view().name("dashboard.html"))
                 .andExpect(content().string(containsString("Welcome - Mock User")))
+                .andExpect(content().string(containsString("Profile")))
+                .andExpect(content().string(containsString("Courses")))
                 .andExpect(content().string(not(containsString("Messages"))))
                 .andExpect(content().string(not(containsString("Your assigned class is"))))
                 .andDo(print());
@@ -75,6 +77,8 @@ class DashboardControllerTest {
                 .andExpect(model().attribute("enrolledClass",equalTo("Class1")))
                 .andExpect(view().name("dashboard.html"))
                 .andExpect(content().string(containsString("Welcome - Mock User")))
+                .andExpect(content().string(containsString("Profile")))
+                .andExpect(content().string(containsString("Courses")))
                 .andExpect(content().string(not(containsString("Messages"))))
                 .andExpect(content().string((containsString("Your assigned class is - [" + enrolledClass.getName() +"]"))))
                 .andDo(print());

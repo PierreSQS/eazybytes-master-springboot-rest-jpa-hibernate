@@ -20,6 +20,7 @@ public class ProjectSecurityConfig extends WebSecurityConfigurerAdapter {
                 .mvcMatchers("/updateProfile").authenticated()
                 .mvcMatchers("/displayMessages").hasRole("ADMIN")
                 .mvcMatchers("/admin/**").hasRole("ADMIN")
+                .mvcMatchers("/student/**").hasRole("STUDENT")
                 .mvcMatchers("/home").permitAll()
                 .mvcMatchers("/holidays/**").permitAll()
                 .mvcMatchers("/contact").permitAll()
