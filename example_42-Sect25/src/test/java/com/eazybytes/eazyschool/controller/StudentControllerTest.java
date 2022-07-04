@@ -31,7 +31,7 @@ class StudentControllerTest {
         course1.setName("Course1");
 
         Course course2 = new Course();
-        course2.setCourseId(1);
+        course2.setCourseId(2);
         course2.setName("Course2");
 
         personMock = new Person();
