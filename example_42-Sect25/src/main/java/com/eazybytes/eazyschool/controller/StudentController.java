@@ -17,7 +17,9 @@ public class StudentController {
     @GetMapping("displayCourses")
     public ModelAndView displayStudentEnrolledCourses(HttpSession httpSession){
         ModelAndView modelAndView = new ModelAndView("courses_enrolled.html");
-        Person studentWithCourses = (Person) httpSession.getAttribute("person");
+
+        // Taken from the Dashboard Controller !!!
+        Person studentWithCourses = (Person) httpSession.getAttribute("loggedUser");
 
         modelAndView.addObject("person",studentWithCourses);
 

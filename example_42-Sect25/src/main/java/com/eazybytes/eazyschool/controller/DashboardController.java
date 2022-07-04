@@ -31,6 +31,9 @@ public class DashboardController {
         if (foundPersByEmail != null && foundPersByEmail.getEazyClass() != null) {
             model.addAttribute("enrolledClass",foundPersByEmail.getEazyClass().getName());
         }
+
+        // This is also the object that will be saved
+        // for the Student Dashboard (e.g. with the courses)
         httpSession.setAttribute("loggedUser",foundPersByEmail);
         return "dashboard.html";
     }

@@ -2,7 +2,6 @@ package com.eazybytes.eazyschool.controller;
 
 import com.eazybytes.eazyschool.model.Course;
 import com.eazybytes.eazyschool.model.Person;
-import lombok.With;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +43,7 @@ class StudentControllerTest {
     @WithMockUser(roles = {"STUDENT"})
     void displayStudentEnrolledCourses() throws Exception {
 
-        mockMvc.perform(get("/student/displayCourses").sessionAttr("person",personMock))
+        mockMvc.perform(get("/student/displayCourses").sessionAttr("loggedUser",personMock))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("person"))
                 .andExpect(view().name("courses_enrolled.html"))
