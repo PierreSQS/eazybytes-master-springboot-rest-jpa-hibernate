@@ -130,7 +130,7 @@ public class AdminController {
             eazyClassRepo.save(eazyClass);
         });
 
-        return "redirect:/admin/displayStudents/?classId="+eazyClass.getClassId();
+        return "redirect:/admin/displayStudents?classId="+eazyClass.getClassId();
     }
 
     @GetMapping("displayCourses")
@@ -171,7 +171,7 @@ public class AdminController {
         Course course = (Course) httpSession.getAttribute("course");
         Person foundStudent = personRepo.findByEmail(person.getEmail());
         if (foundStudent == null) {
-            return new ModelAndView("redirect:/admin/viewStudents/?id="+course.getCourseId()+"&error=true");
+            return new ModelAndView("redirect:/admin/viewStudents?id="+course.getCourseId()+"&error=true");
         }
 
         // link the course to the student
@@ -184,7 +184,7 @@ public class AdminController {
         // also the course will be saved
         personRepo.save(foundStudent);
 
-        return new ModelAndView("redirect:/admin/viewStudents/?id="+course.getCourseId());
+        return new ModelAndView("redirect:/admin/viewStudents?id="+course.getCourseId());
     }
 
     @GetMapping("deleteStudentFromCourse")

@@ -228,7 +228,7 @@ class AdminControllerTest {
                         .with(csrf())
                         .sessionAttr("eazyClass",classMock))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/admin/displayStudents/?classId=1"))
+                .andExpect(redirectedUrl("/admin/displayStudents?classId=1"))
                 .andDo(print());
 
         verify(eazyClassRepoMock).save(any());
@@ -290,7 +290,7 @@ class AdminControllerTest {
                         .with(csrf())
                         .sessionAttr("course",eazyCoursesMock.get(0)))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/admin/viewStudents/?id=1&error=true"))
+                .andExpect(redirectedUrl("/admin/viewStudents?id=1&error=true"))
                 .andDo(print());
     }
 
@@ -310,7 +310,7 @@ class AdminControllerTest {
                         .param("email", foundStudent.getEmail())
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/admin/viewStudents/?id="+sessionAttrCourse.getCourseId()))
+                .andExpect(redirectedUrl("/admin/viewStudents?id="+sessionAttrCourse.getCourseId()))
                 .andDo(print());
 
         verify(personRepoMock).save(foundStudent);
