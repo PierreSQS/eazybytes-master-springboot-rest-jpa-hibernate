@@ -16,12 +16,12 @@ public class StudentController {
 
     @GetMapping("displayCourses")
     public ModelAndView displayStudentEnrolledCourses(HttpSession httpSession){
-        ModelAndView modelAndView = new ModelAndView();
+        ModelAndView modelAndView = new ModelAndView("courses_enrolled.html");
         Person studentWithCourses = (Person) httpSession.getAttribute("person");
 
         modelAndView.addObject("person",studentWithCourses);
 
-        return new ModelAndView("courses_enrolled.html");
+        return modelAndView;
     }
 
 }

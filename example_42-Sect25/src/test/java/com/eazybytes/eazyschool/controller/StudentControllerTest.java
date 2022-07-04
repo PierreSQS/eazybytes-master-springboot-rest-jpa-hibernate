@@ -36,6 +36,7 @@ class StudentControllerTest {
 
         personMock = new Person();
         personMock.setPersonId(1);
+        personMock.setName("Mock Student");
         personMock.setCourses(Set.of(course1,course2));
     }
 
