@@ -275,7 +275,7 @@ class AdminControllerTest {
     void viewStudent() throws Exception {
         // Given
         given(courseRepoMock.findById(anyInt())).willReturn(Optional.ofNullable(eazyCoursesMock.get(0)));
-        mockMvc.perform(get("/admin/viewStudents").param("id","1"))
+        mockMvc.perform(get("/admin/viewStudents").param("courseId","1"))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("course"))
                 .andExpect(view().name("course_students.html"))
@@ -290,7 +290,7 @@ class AdminControllerTest {
                         .with(csrf())
                         .sessionAttr("course",eazyCoursesMock.get(0)))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/admin/viewStudents?id=1&error=true"))
+                .andExpect(redirectedUrl("/admin/viewStudents?courseId=1&error=true"))
                 .andDo(print());
     }
 
@@ -310,7 +310,7 @@ class AdminControllerTest {
                         .param("email", foundStudent.getEmail())
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/admin/viewStudents?id="+sessionAttrCourse.getCourseId()))
+                .andExpect(redirectedUrl("/admin/viewStudents?courseId="+sessionAttrCourse.getCourseId()))
                 .andDo(print());
 
         verify(personRepoMock).save(foundStudent);

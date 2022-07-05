@@ -87,7 +87,7 @@
                 <td th:text="${course.courseId}"></td>
                 <td th:text="${course.name}"></td>
                 <td th:text="${course.fees}"></td>
-                <td><a th:href="@{/admin/viewStudents(id=${course.courseId})}" class="btn btn-warning">VIEW STUDENTS</a></td>
+                <td><a th:href="@{/admin/viewStudents(courseId=${course.courseId})}" class="btn btn-warning">VIEW STUDENTS</a></td>
             </tr>
             </tbody>
         </table>

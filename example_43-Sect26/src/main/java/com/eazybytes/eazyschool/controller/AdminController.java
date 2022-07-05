@@ -24,6 +24,9 @@ import java.util.Set;
 public class AdminController {
 
     public static final String EAZY_CLASS_ATTR = "eazyClass";
+    public static final String REDIRECT_DISPLAY_STUDENTS_CLASS_ID = "redirect:/admin/displayStudents?classId=";
+    public static final String COURSE_ATTR = "course";
+    public static final String REDIRECT_VIEW_STUDENTS_COURSE_ID = "redirect:/admin/viewStudents?courseId=";
 
     private final EazyClassRepository eazyClassRepo;
     private final PersonRepository personRepo;
@@ -92,7 +95,7 @@ public class AdminController {
         EazyClass eazyClass = (EazyClass) httpSession.getAttribute(EAZY_CLASS_ATTR);
         Person foundStudent = personRepo.findByEmail(student.getEmail());
         if (foundStudent == null) {
-            return "redirect:/admin/displayStudents?classId="+eazyClass.getClassId()+"&error=true";
+            return REDIRECT_DISPLAY_STUDENTS_CLASS_ID +eazyClass.getClassId()+"&error=true";
         }
 
         // add the class to the student
@@ -110,7 +113,7 @@ public class AdminController {
         // the student because the cascade "Persist"
         eazyClassRepo.save(eazyClass);
 
-        return "redirect:/admin/displayStudents?classId="+eazyClass.getClassId();
+        return REDIRECT_DISPLAY_STUDENTS_CLASS_ID+eazyClass.getClassId();
     }
 
     @GetMapping("deleteStudent")
@@ -130,14 +133,14 @@ public class AdminController {
             eazyClassRepo.save(eazyClass);
         });
 
-        return "redirect:/admin/displayStudents?classId="+eazyClass.getClassId();
+        return REDIRECT_DISPLAY_STUDENTS_CLASS_ID+eazyClass.getClassId();
     }
 
     @GetMapping("displayCourses")
     public String displayCourses(Model model) {
         List<Course> coursesForStudent = courseRepo.findAll();
         model.addAttribute("courses",coursesForStudent);
-        model.addAttribute("course",new Course());
+        model.addAttribute(COURSE_ATTR,new Course());
         return "courses_secure.html";
     }
 
@@ -149,13 +152,13 @@ public class AdminController {
     }
 
     @GetMapping("viewStudents")
-    public String viewStudent(Model model, @RequestParam("id") Integer courseID, HttpSession httpSession, String error) {
+    public String viewStudent(Model model, @RequestParam("courseId") Integer courseID, HttpSession httpSession, String error) {
         String errorMessage;
         Optional<Course> foundCourseOpt = courseRepo.findById(courseID);
         foundCourseOpt.ifPresent(course -> {
-            model.addAttribute("course",course);
+            model.addAttribute(COURSE_ATTR,course);
             model.addAttribute("person",new Person());
-            httpSession.setAttribute("course",course);
+            httpSession.setAttribute(COURSE_ATTR,course);
         });
 
         if (error != null) {
@@ -168,10 +171,10 @@ public class AdminController {
 
     @PostMapping("addStudentToCourse")
     ModelAndView addStudentToCourse(Person person, HttpSession httpSession) {
-        Course course = (Course) httpSession.getAttribute("course");
+        Course course = (Course) httpSession.getAttribute(COURSE_ATTR);
         Person foundStudent = personRepo.findByEmail(person.getEmail());
         if (foundStudent == null) {
-            return new ModelAndView("redirect:/admin/viewStudents?id="+course.getCourseId()+"&error=true");
+            return new ModelAndView(REDIRECT_VIEW_STUDENTS_COURSE_ID +course.getCourseId()+"&error=true");
         }
 
         // link the course to the student
@@ -184,12 +187,12 @@ public class AdminController {
         // also the course will be saved
         personRepo.save(foundStudent);
 
-        return new ModelAndView("redirect:/admin/viewStudents?id="+course.getCourseId());
+        return new ModelAndView(REDIRECT_VIEW_STUDENTS_COURSE_ID + course.getCourseId());
     }
 
     @GetMapping("deleteStudentFromCourse")
     public String deleteStudentFromCourse(@RequestParam Integer personId, HttpSession httpSession) {
-        Course course = (Course) httpSession.getAttribute("course");
+        Course course = (Course) httpSession.getAttribute(COURSE_ATTR);
 
         Optional<Person> foundStudentOpt = personRepo.findById(personId);
         foundStudentOpt.ifPresent(person -> {
@@ -198,7 +201,7 @@ public class AdminController {
             personRepo.save(person);
         });
 
-        return "redirect:/admin/viewStudents?id="+course.getCourseId();
+        return REDIRECT_VIEW_STUDENTS_COURSE_ID + course.getCourseId();
     }
 
 }
