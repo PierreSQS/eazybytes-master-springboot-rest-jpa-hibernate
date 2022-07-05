@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -103,9 +102,6 @@ public class AdminController {
 
         // add the student to the class
         Set<Person> students = eazyClass.getPersons();
-        if (students == null) {
-            students = new HashSet<>(); // necessary for the test, otherwise NPE will be thrown!!
-        }
 
         students.add(foundStudent);
 
@@ -124,10 +120,6 @@ public class AdminController {
         Optional<Person> personToDeleteOpt = personRepo.findById(personID);
         personToDeleteOpt.ifPresent(person -> {
             Set<Person> persons = eazyClass.getPersons();
-            // Necessary for the test which doesn't the students e.g. Set<Person>
-            if (persons == null) {
-                persons = new HashSet<>();
-            }
             persons.remove(person);
             person.setEazyClass(null);
             eazyClassRepo.save(eazyClass);

@@ -85,7 +85,7 @@ public class Person extends BaseEntity{
     @JoinTable(name = "person_course",
             joinColumns = {@JoinColumn(name = "person_id",referencedColumnName = "personId")},
             inverseJoinColumns = {@JoinColumn(name = "course_id",referencedColumnName = "courseId")})
-    private Set<Course> courses = new HashSet<>(); // This initialization can be helpfully for the Tests!!!
+    private Set<Course> courses = new HashSet<>(); // This initialization is helpfully for the Tests!!!
 
     @Override
     public boolean equals(Object o) {

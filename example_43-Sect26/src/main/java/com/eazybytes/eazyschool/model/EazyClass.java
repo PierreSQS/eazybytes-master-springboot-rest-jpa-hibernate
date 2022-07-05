@@ -7,6 +7,7 @@ import lombok.ToString;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -27,5 +28,5 @@ public class EazyClass extends BaseEntity {
     @OneToMany(mappedBy = "eazyClass", fetch = FetchType.LAZY,
             cascade = CascadeType.PERSIST,targetEntity = Person.class)
     @ToString.Exclude
-    private Set<Person> persons;
+    private Set<Person> persons = new HashSet<>(); // This initialization is helpfully for the Tests!!!
 }
