@@ -4,6 +4,7 @@ import com.eazybytes.eazyschool.model.Contact;
 import com.eazybytes.eazyschool.service.ContactService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -36,15 +37,24 @@ public class ContactController {
                     .map(DefaultMessageSourceResolvable::getDefaultMessage).toList());
             return "contact.html";
         }
-        contactService.saveMessageDetails(contact);
+        boolean isContactSaved = contactService.saveMessageDetails(contact);
+        if (isContactSaved) log.info("#### 1 contact saved #########");
         return "redirect:/contact";
     }
 
-    @GetMapping("/displayMessages")
-    public ModelAndView displayMessages() {
-        List<Contact> contactMsgs = contactService.findMsgsWithOpenStatus();
+    @GetMapping("/displayMessages/page/{pageNum}")
+    public ModelAndView displayMessages(@PathVariable int pageNum,
+                                        @RequestParam String sortField, @RequestParam String sortDir) {
+        Page<Contact> contactMsgPages = contactService.findMsgsWithOpenStatus(pageNum, sortField,sortDir);
+
+        List<Contact> contactMsgList = contactMsgPages.getContent();
+
         ModelAndView modelAndView = new ModelAndView("messages.html");
-        modelAndView.addObject("contactMsgs",contactMsgs);
+        modelAndView.addObject("contactMsgs",contactMsgList);
+        modelAndView.addObject("currentPage",pageNum);
+        modelAndView.addObject("totalPages",contactMsgPages.getTotalPages());
+        modelAndView.addObject("sortField",sortField);
+        modelAndView.addObject("sortDir",sortDir);
         return modelAndView;
     }
 

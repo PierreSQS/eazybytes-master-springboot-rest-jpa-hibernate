@@ -1,6 +1,5 @@
 package com.eazybytes.eazyschool.controller;
 
-import com.eazybytes.eazyschool.constants.EazySchoolConstants;
 import com.eazybytes.eazyschool.model.Contact;
 import com.eazybytes.eazyschool.service.ContactService;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,14 +7,17 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.*;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import java.util.List;
+
 import static org.hamcrest.Matchers.containsString;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -27,7 +29,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class ContactControllerTest {
 
     private MultiValueMap<String, String> multiValueMap;
-    private Contact contact;
+    private Contact contact1;
+    private List<Contact> contactMessages;
 
     @Autowired
     MockMvc mockMvc;
@@ -38,17 +41,33 @@ class ContactControllerTest {
     @BeforeEach
     void setUp() {
         // Given
-        contact = new Contact();
-        contact.setName("Pierrot Test");
-        contact.setEmail("pierrot@example.com");
-        contact.setMessage("Please contact me");
-        contact.setSubject("Very urgent");
+        contact1 = new Contact();
+        contact1.setName("Pierrot Test");
+        contact1.setEmail("pierrot@example.com");
+        contact1.setMessage("Please contact me");
+        contact1.setSubject("Very urgent");
+
+        Contact contact2 = new Contact();
+        contact2.setContactId(1);
+        contact2.setName("Sarah Test");
+        contact2.setEmail("sarah@example.com");
+        contact2.setMessage("Please contact me");
+        contact2.setSubject("concerning my music course");
+
+        Contact contact3 = new Contact();
+        contact3.setContactId(2);
+        contact3.setName("Jeannot Test");
+        contact3.setEmail("jeannot@example.com");
+        contact3.setMessage("A Question");
+        contact3.setSubject("is there any Music course?");
+
+        contactMessages = List.of(contact2,contact3);
 
         multiValueMap = new LinkedMultiValueMap<>();
-        multiValueMap.add("name",contact.getName());
-        multiValueMap.add("email", contact.getEmail());
-        multiValueMap.add("message", contact.getMessage());
-        multiValueMap.add("subject",contact.getSubject());
+        multiValueMap.add("name", contact1.getName());
+        multiValueMap.add("email", contact1.getEmail());
+        multiValueMap.add("message", contact1.getMessage());
+        multiValueMap.add("subject", contact1.getSubject());
     }
 
     @Test
@@ -65,8 +84,8 @@ class ContactControllerTest {
     @Test
     void saveMessageOK() throws Exception {
         // Given
-        contact.setMobileNum("2121212122");
-        multiValueMap.add("mobileNum",contact.getMobileNum());
+        contact1.setMobileNum("2121212122");
+        multiValueMap.add("mobileNum", contact1.getMobileNum());
 
         // When, Then
         mockMvc.perform(post("/saveMsg").params(multiValueMap))
@@ -81,8 +100,8 @@ class ContactControllerTest {
     @Test
     void saveMessageMobileNrWrong() throws Exception {
         // Given
-        contact.setMobileNum("21212121221");
-        multiValueMap.add("mobileNum",contact.getMobileNum());
+        contact1.setMobileNum("21212121221");
+        multiValueMap.add("mobileNum", contact1.getMobileNum());
 
         // When, Then
         mockMvc.perform(post("/saveMsg").params(multiValueMap))
@@ -97,8 +116,24 @@ class ContactControllerTest {
 
     @Test
     @WithMockUser(roles = {"ADMIN"})
-    void displayContactMessages() throws Exception {
-        mockMvc.perform(get("/displayMessages").param("status", EazySchoolConstants.OPEN))
+    void displayContactMessagesSortByNameAsc() throws Exception {
+        // Given
+        int pageNum = 1;
+        String sortField = "sortField";
+        String sortDir= "sortDir";
+
+        Pageable pageable = PageRequest.of(pageNum, 5,Sort.by(sortField).ascending());
+        Page<Contact> page = new PageImpl<>(contactMessages,pageable,10);
+
+//        given(contactSrvMock.findMsgsWithOpenStatus(pageNum,sortField,sortDir)).willReturn(page);
+        given(contactSrvMock.findMsgsWithOpenStatus(anyInt(),anyString(),anyString())).willReturn(page);
+
+        multiValueMap = new LinkedMultiValueMap<>();
+        multiValueMap.add(sortField,"name");
+        multiValueMap.add(sortDir,"asc");
+
+        mockMvc.perform(get("/displayMessages/page/{pageNum}",pageNum)
+                        .params(multiValueMap))
                 .andExpect(status().isOk())
                 .andExpect(view().name("messages.html"))
                 .andExpect(content().string(containsString("Open Contact Messages")))
