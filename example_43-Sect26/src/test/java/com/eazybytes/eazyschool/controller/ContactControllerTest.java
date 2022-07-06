@@ -159,7 +159,7 @@ class ContactControllerTest {
         given(contactSrvMock.updateContactStatus(anyInt())).willReturn(true);
         mockMvc.perform(get("/closeMsg").param("id","1"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/displayMessages"))
+                .andExpect(view().name("redirect:/displayMessages/page/1?sortField=name&sortDir=desc"))
                 .andDo(print());
 
     }
