@@ -15,9 +15,9 @@ import org.springframework.util.MultiValueMap;
 
 import java.util.List;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.hamcrest.Matchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -119,24 +119,33 @@ class ContactControllerTest {
     void displayContactMessagesSortByNameAsc() throws Exception {
         // Given
         int pageNum = 1;
-        String sortField = "sortField";
-        String sortDir= "sortDir";
+        int totalPages = contactMessages.size();
+        String sortField = "name";
+        String sortDir= "asc";
 
         Pageable pageable = PageRequest.of(pageNum, 5,Sort.by(sortField).ascending());
-        Page<Contact> page = new PageImpl<>(contactMessages,pageable,10);
+        Page<Contact> page = new PageImpl<>(contactMessages,pageable,totalPages);
 
-//        given(contactSrvMock.findMsgsWithOpenStatus(pageNum,sortField,sortDir)).willReturn(page);
-        given(contactSrvMock.findMsgsWithOpenStatus(anyInt(),anyString(),anyString())).willReturn(page);
+        given(contactSrvMock.findMsgsWithOpenStatus(pageNum,sortField,sortDir)).willReturn(page);
 
         multiValueMap = new LinkedMultiValueMap<>();
-        multiValueMap.add(sortField,"name");
-        multiValueMap.add(sortDir,"asc");
+        multiValueMap.add("sortField",sortField);
+        multiValueMap.add("sortDir",sortDir);
 
         mockMvc.perform(get("/displayMessages/page/{pageNum}",pageNum)
                         .params(multiValueMap))
                 .andExpect(status().isOk())
+                .andExpect(model().attribute("contactMsgs",
+                        hasItem(hasProperty("email",equalTo("sarah@example.com")))))
+                .andExpect(model().attribute("currentPage",equalTo(pageNum)))
+                .andExpect(model().attribute("totalPages",equalTo(totalPages)))
+                .andExpect(model().attribute("currentPage",equalTo(pageNum)))
+                .andExpect(model().attribute("sortField",equalTo(sortField)))
+                .andExpect(model().attribute("reverseSortDir",equalTo(sortDir)))
                 .andExpect(view().name("messages.html"))
                 .andExpect(content().string(containsString("Open Contact Messages")))
+                .andExpect(content().string(containsString("<td>Sarah Test</td>")))
+                .andExpect(content().string(containsString("<td>Jeannot Test</td>")))
                 .andDo(print());
     }
 

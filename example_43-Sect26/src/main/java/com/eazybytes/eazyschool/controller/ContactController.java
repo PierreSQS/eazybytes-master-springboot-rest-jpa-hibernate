@@ -54,7 +54,7 @@ public class ContactController {
         modelAndView.addObject("currentPage",pageNum);
         modelAndView.addObject("totalPages",contactMsgPages.getTotalPages());
         modelAndView.addObject("sortField",sortField);
-        modelAndView.addObject("sortDir",sortDir);
+        modelAndView.addObject("reverseSortDir",sortDir);
         return modelAndView;
     }
 
