@@ -119,12 +119,14 @@ class ContactControllerTest {
     void displayContactMessagesSortByNameAsc() throws Exception {
         // Given
         int pageNum = 1;
-        int totalPages = contactMessages.size();
+        int totalElmts = 10;
+        int pageSize = 2;
         String sortField = "name";
         String sortDir= "asc";
 
-        Pageable pageable = PageRequest.of(pageNum, 5,Sort.by(sortField).ascending());
-        Page<Contact> page = new PageImpl<>(contactMessages,pageable,totalPages);
+        Pageable pageable = PageRequest.of(pageNum, pageSize ,Sort.by(sortField));
+
+        Page<Contact> page = new PageImpl<>(contactMessages,pageable,totalElmts);
 
         given(contactSrvMock.findMsgsWithOpenStatus(pageNum,sortField,sortDir)).willReturn(page);
 
@@ -138,10 +140,11 @@ class ContactControllerTest {
                 .andExpect(model().attribute("contactMsgs",
                         hasItem(hasProperty("email",equalTo("sarah@example.com")))))
                 .andExpect(model().attribute("currentPage",equalTo(pageNum)))
-                .andExpect(model().attribute("totalPages",equalTo(totalPages)))
+                .andExpect(model().attribute("totalPages",equalTo(totalElmts/pageSize)))
                 .andExpect(model().attribute("currentPage",equalTo(pageNum)))
                 .andExpect(model().attribute("sortField",equalTo(sortField)))
-                .andExpect(model().attribute("reverseSortDir",equalTo(sortDir)))
+                .andExpect(model().attribute("sortDir",equalTo(sortDir)))
+                .andExpect(model().attribute("reverseSortDir",sortDir.equals("asc")?"desc":"asc"))
                 .andExpect(view().name("messages.html"))
                 .andExpect(content().string(containsString("Open Contact Messages")))
                 .andExpect(content().string(containsString("<td>Sarah Test</td>")))
