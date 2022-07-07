@@ -18,5 +18,5 @@ public interface ContactRepository extends JpaRepository<Contact, Integer> {
 
     //@Query("SELECT c FROM Contact c WHERE c.status = :status")
     @Query(value = "SELECT * FROM contact_msg c WHERE c.status = :status",nativeQuery = true)
-    Page<Contact> findByStatus(@Param("status") String status, Pageable pageable); //@Param not necessary
+    Page<Contact> findByStatus(@Param("status") String msgStatus, Pageable pageable); //@Param necessary in this case
 }
