@@ -10,8 +10,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 /*
 @Slf4j, is a Lombok-provided annotation that will automatically generate an SLF4J
 Logger static property in the class at compilation time.
@@ -47,16 +45,9 @@ public class ContactService {
     }
 
     public boolean updateContactStatus(int contactId){
-        Optional<Contact> contactOpt = contactRepository.findById(contactId);
+        int updatedRows = contactRepository.updateMsgStatusByIdNative(EazySchoolConstants.CLOSED, contactId);
 
-        if (contactOpt.isPresent()){
-            Contact foundContact = contactOpt.get();
-            foundContact.setStatus(EazySchoolConstants.CLOSE);
-            contactRepository.save(foundContact);
-            return true;
-        } else {
-            return false;
-        }
+        return updatedRows > 0;
 
     }
 
