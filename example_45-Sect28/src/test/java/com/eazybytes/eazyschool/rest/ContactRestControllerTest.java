@@ -6,6 +6,7 @@ import com.eazybytes.eazyschool.repository.ContactRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -17,9 +18,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -27,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(ContactRestController.class)
 class ContactRestControllerTest {
 
-    private Contact contact1;
+    private Contact validContact, contactWithInvalidEmail;
     private List<Contact> contactMessagesMock;
 
     @Autowired
@@ -42,12 +46,18 @@ class ContactRestControllerTest {
     @BeforeEach
     void setUp() {
         // Given
-        contact1 = new Contact();
-        contact1.setName("Pierrot Test");
-        contact1.setEmail("pierrot@example.com");
-        contact1.setMessage("Please contact me");
-        contact1.setStatus(EazySchoolConstants.CLOSED);
-        contact1.setSubject("Very urgent");
+        validContact = new Contact();
+        validContact.setName("Pierrot Test");
+        validContact.setEmail("pierrot@example.com");
+        validContact.setMobileNum("1234567890");
+        validContact.setMessage("Please contact me");
+        validContact.setStatus(EazySchoolConstants.CLOSED);
+        validContact.setSubject("Very urgent");
+
+        contactWithInvalidEmail = new Contact();
+        contactWithInvalidEmail.setName("Pierrot Test");
+        contactWithInvalidEmail.setEmail("pierrot§example.com");
+
 
         Contact contact2 = new Contact();
         contact2.setContactId(1);
@@ -87,11 +97,11 @@ class ContactRestControllerTest {
     @WithMockUser(username = "Mock User")
     void getContactMessagesByStatusWithBody() throws Exception {
         // Given
-        contactMessagesMock = List.of(contact1);
+        contactMessagesMock = List.of(validContact);
         given(contactRepoSrvMock.findByStatus(anyString())).willReturn(contactMessagesMock);
 
         mockMvc.perform(get("/api/contact/getMessagesByStatusWithBody")
-                        .content(objectMapper.writeValueAsString(contact1))
+                        .content(objectMapper.writeValueAsString(validContact))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -99,5 +109,44 @@ class ContactRestControllerTest {
                 .andExpect(jsonPath("$[0].email").value(equalTo("pierrot@example.com")))
                 .andExpect(jsonPath("$[0].status").value(equalTo(EazySchoolConstants.CLOSED)))
                 .andDo(print());
+    }
+
+    @Test
+    @WithMockUser(username = "Mock User")
+    void saveMsgValidData() throws Exception {
+        // Given
+        mockMvc.perform(post("/api/contact/saveMsg")
+                        .content(objectMapper.writeValueAsString(validContact))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("invocationForm","Mock Unit Test"))
+                .andExpect(status().isCreated())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(header().string("isMsgSaved","true"))
+                .andExpect(jsonPath("$.statusCode").value(equalTo("201 CREATED")))
+                .andExpect(jsonPath("$.statusMsg").value(equalTo("Message saved successfully!")))
+                .andDo(print());
+
+        verify(contactRepoSrvMock).save(any());
+
+    }
+
+    @Disabled("Wrong assertions because of the actual GlobalExceptionController!!!!")
+    @Test
+    @WithMockUser(username = "Mock User")
+    void saveMsgInvalidData() throws Exception {
+        // Given
+        mockMvc.perform(post("/api/contact/saveMsg")
+                        .content(objectMapper.writeValueAsString(contactWithInvalidEmail))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("invocationForm","Mock Unit Test"))
+                .andExpect(status().isCreated())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(header().string("isMsgSaved","true"))
+                .andExpect(jsonPath("$.statusCode").value(equalTo("201 CREATED")))
+                .andExpect(jsonPath("$.statusMsg").value(equalTo("Message saved successfully!")))
+                .andDo(print());
+
+        verify(contactRepoSrvMock).save(any());
+
     }
 }
