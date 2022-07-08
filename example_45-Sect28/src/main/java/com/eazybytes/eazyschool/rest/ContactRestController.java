@@ -3,10 +3,7 @@ package com.eazybytes.eazyschool.rest;
 import com.eazybytes.eazyschool.model.Contact;
 import com.eazybytes.eazyschool.repository.ContactRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,4 +21,11 @@ public class ContactRestController {
     public List<Contact> getContactMessagesByStatus(@RequestParam String status) {
         return contactRepo.findByStatus(status);
     }
+
+    @GetMapping("getMessagesByStatusWithBody")
+    public List<Contact> getContactMessagesByStatusWithBody(@RequestBody Contact contact) {
+        return contactRepo.findByStatus(contact.getStatus());
+    }
+
+
 }

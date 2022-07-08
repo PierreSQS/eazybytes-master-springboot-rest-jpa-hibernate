@@ -3,12 +3,14 @@ package com.eazybytes.eazyschool.rest;
 import com.eazybytes.eazyschool.constants.EazySchoolConstants;
 import com.eazybytes.eazyschool.model.Contact;
 import com.eazybytes.eazyschool.repository.ContactRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -19,8 +21,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @Slf4j
 @WebMvcTest(ContactRestController.class)
@@ -28,6 +29,9 @@ class ContactRestControllerTest {
 
     private Contact contact1;
     private List<Contact> contactMessagesMock;
+
+    @Autowired
+    ObjectMapper objectMapper;
 
     @MockBean
     ContactRepository contactRepoSrvMock;
@@ -42,6 +46,7 @@ class ContactRestControllerTest {
         contact1.setName("Pierrot Test");
         contact1.setEmail("pierrot@example.com");
         contact1.setMessage("Please contact me");
+        contact1.setStatus(EazySchoolConstants.CLOSED);
         contact1.setSubject("Very urgent");
 
         Contact contact2 = new Contact();
@@ -75,6 +80,24 @@ class ContactRestControllerTest {
                 .andExpect(jsonPath("$.size()").value(equalTo(2)))
                 .andExpect(jsonPath("$[0].email").value(equalTo("sarah@example.com")))
                 .andExpect(jsonPath("$[1].email").value(equalTo("jeannot@example.com")))
+                .andDo(print());
+    }
+
+    @Test
+    @WithMockUser(username = "Mock User")
+    void getContactMessagesByStatusWithBody() throws Exception {
+        // Given
+        contactMessagesMock = List.of(contact1);
+        given(contactRepoSrvMock.findByStatus(anyString())).willReturn(contactMessagesMock);
+
+        mockMvc.perform(get("/api/contact/getMessagesByStatusWithBody")
+                        .content(objectMapper.writeValueAsString(contact1))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.size()").value(equalTo(1)))
+                .andExpect(jsonPath("$[0].email").value(equalTo("pierrot@example.com")))
+                .andExpect(jsonPath("$[0].status").value(equalTo(EazySchoolConstants.CLOSED)))
                 .andDo(print());
     }
 }
