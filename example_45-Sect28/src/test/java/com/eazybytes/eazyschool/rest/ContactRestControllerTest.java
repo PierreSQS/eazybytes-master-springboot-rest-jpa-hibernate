@@ -16,14 +16,14 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -118,7 +118,7 @@ class ContactRestControllerTest {
         mockMvc.perform(post("/api/contact/saveMsg")
                         .content(objectMapper.writeValueAsString(validContact))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .header("invocationForm","Mock Unit Test"))
+                        .header("invocationFrom","Mock Unit Test"))
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(header().string("isMsgSaved","true"))
@@ -138,7 +138,7 @@ class ContactRestControllerTest {
         mockMvc.perform(post("/api/contact/saveMsg")
                         .content(objectMapper.writeValueAsString(contactWithInvalidEmail))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .header("invocationForm","Mock Unit Test"))
+                        .header("invocationFrom","Mock Unit Test"))
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(header().string("isMsgSaved","true"))
@@ -149,4 +149,44 @@ class ContactRestControllerTest {
         verify(contactRepoSrvMock).save(any());
 
     }
+
+    @Test
+    @WithMockUser(username = "Mock User")
+    void deleteMsgContactIdExists() throws Exception {
+        // Given
+        validContact.setContactId(1);
+        given(contactRepoSrvMock.findById(anyInt())).willReturn(Optional.of(validContact));
+
+        mockMvc.perform(delete("/api/contact/deleteMsg")
+                        .content(objectMapper.writeValueAsString(validContact))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.statusCode").value(equalTo("200 OK")))
+                .andExpect(jsonPath("$.statusMsg").value(equalTo("Message deleted successfully!!")))
+                .andDo(print());
+
+        verify(contactRepoSrvMock).delete(any());
+
+    }
+
+    @Test
+    @WithMockUser(username = "Mock User")
+    void deleteMsgContactIdDoesNotExists() throws Exception {
+        // Given
+        given(contactRepoSrvMock.findById(anyInt())).willReturn(null);
+
+        mockMvc.perform(delete("/api/contact/deleteMsg")
+                        .content(objectMapper.writeValueAsString(validContact))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.statusCode").value(equalTo("404 NOT_FOUND")))
+                .andExpect(jsonPath("$.statusMsg").value(equalTo("Message with null doesn't exists!")))
+                .andDo(print());
+
+        verify(contactRepoSrvMock,never()).delete(any());
+
+    }
+
 }

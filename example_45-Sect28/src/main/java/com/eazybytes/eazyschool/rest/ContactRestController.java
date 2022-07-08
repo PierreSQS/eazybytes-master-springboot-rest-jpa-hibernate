@@ -5,11 +5,13 @@ import com.eazybytes.eazyschool.model.Response;
 import com.eazybytes.eazyschool.repository.ContactRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -32,8 +34,8 @@ public class ContactRestController {
     }
 
     @PostMapping("saveMsg")
-    public ResponseEntity<Response> saveMsg(@RequestHeader String invocationForm, @Valid @RequestBody Contact contact) {
-        log.info("####### Header invocationForm: {}#######",invocationForm);
+    public ResponseEntity<Response> saveMsg(@RequestHeader String invocationFrom, @Valid @RequestBody Contact contact) {
+        log.info("####### Header invocationFrom: {} #######",invocationFrom);
         contactRepo.save(contact);
 
         Response response = new Response();
@@ -44,6 +46,47 @@ public class ContactRestController {
                 .status(HttpStatus.CREATED)
                 .header("isMsgSaved","true")
                 .body(response);
+    }
+
+    @DeleteMapping("deleteMsg")
+    public ResponseEntity<Response> deleteMsg(RequestEntity<Contact> requestEntity) {
+        // preparing the ResponseEntity
+        Response response = new Response();
+        HttpStatus httpStatus = HttpStatus.OK;
+
+        log.info("####### Displaying the request Headers....#######");
+        requestEntity.getHeaders().forEach((key, values) -> log.info("Header:{} = {}", key, values));
+
+        // Getting the contact from the Request
+        Contact contactToDelete = requestEntity.getBody();
+
+        // Check whether the contact exists
+        assert contactToDelete != null;
+        Optional<Contact> foundIdToDeleteFromDBOpt = contactRepo.findById(contactToDelete.getContactId());
+
+        if (foundIdToDeleteFromDBOpt.isPresent()) {
+            Contact contactTodelete = foundIdToDeleteFromDBOpt.get();
+
+            // Delete Contact if exists
+            contactRepo.delete(contactTodelete);
+
+            // Set the response and status
+            setResponse(response, httpStatus.toString() ,"Message deleted successfully!!");
+        } else {
+            httpStatus = HttpStatus.NOT_FOUND;
+            setResponse(response,httpStatus.toString(),
+                    "Message with "+contactToDelete.getContactId()+" doesn't exists!");
+        }
+
+        return ResponseEntity
+                .status(httpStatus)
+                .body(response);
+    }
+
+    private void setResponse(Response response,String statusCode, String statusMsg) {
+        response.setStatusCode(statusCode);
+        response.setStatusMsg(statusMsg);
+
     }
 
 }
