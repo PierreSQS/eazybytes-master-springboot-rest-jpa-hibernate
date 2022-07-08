@@ -174,7 +174,8 @@ class ContactRestControllerTest {
     @WithMockUser(username = "Mock User")
     void deleteMsgContactIdDoesNotExists() throws Exception {
         // Given
-        given(contactRepoSrvMock.findById(anyInt())).willReturn(null);
+        validContact.setContactId(1);
+        given(contactRepoSrvMock.findById(validContact.getContactId())).willReturn(Optional.empty());
 
         mockMvc.perform(delete("/api/contact/deleteMsg")
                         .content(objectMapper.writeValueAsString(validContact))
@@ -182,7 +183,7 @@ class ContactRestControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.statusCode").value(equalTo("404 NOT_FOUND")))
-                .andExpect(jsonPath("$.statusMsg").value(equalTo("Message with null doesn't exists!")))
+                .andExpect(jsonPath("$.statusMsg").value(equalTo("Message with contactID: 1 doesn't exists!")))
                 .andDo(print());
 
         verify(contactRepoSrvMock,never()).delete(any());

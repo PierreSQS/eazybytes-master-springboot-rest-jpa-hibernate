@@ -75,7 +75,7 @@ public class ContactRestController {
         } else {
             httpStatus = HttpStatus.NOT_FOUND;
             setResponse(response,httpStatus.toString(),
-                    "Message with "+contactToDelete.getContactId()+" doesn't exists!");
+                    "Message with contactID: "+contactToDelete.getContactId()+" doesn't exists!");
         }
 
         return ResponseEntity
