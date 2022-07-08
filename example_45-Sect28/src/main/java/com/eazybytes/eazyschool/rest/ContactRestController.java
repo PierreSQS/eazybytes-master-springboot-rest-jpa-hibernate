@@ -1,5 +1,6 @@
 package com.eazybytes.eazyschool.rest;
 
+import com.eazybytes.eazyschool.constants.EazySchoolConstants;
 import com.eazybytes.eazyschool.model.Contact;
 import com.eazybytes.eazyschool.model.Response;
 import com.eazybytes.eazyschool.repository.ContactRepository;
@@ -76,6 +77,35 @@ public class ContactRestController {
             httpStatus = HttpStatus.NOT_FOUND;
             setResponse(response,httpStatus.toString(),
                     "Message with contactID: "+contactToDelete.getContactId()+" doesn't exists!");
+        }
+
+        return ResponseEntity
+                .status(httpStatus)
+                .body(response);
+    }
+
+    @PatchMapping("closeMsg")
+    public ResponseEntity<Response> closeMsg(@RequestBody Contact contact) {
+        // preparing the ResponseEntity
+        Response response = new Response();
+        HttpStatus httpStatus = HttpStatus.OK;
+
+        // Check whether the contact exists
+        Optional<Contact> foundIdToUpdateFromDBOpt = contactRepo.findById(contact.getContactId());
+
+        if (foundIdToUpdateFromDBOpt.isPresent()) {
+            Contact contactToUpdate = foundIdToUpdateFromDBOpt.get();
+
+            // Delete Contact if exists
+            contactToUpdate.setStatus(EazySchoolConstants.CLOSED);
+            contactRepo.save(contactToUpdate);
+
+            // Set the response and status
+            setResponse(response, httpStatus.toString() ,"Message successfully updated!!");
+        } else {
+            httpStatus = HttpStatus.BAD_REQUEST;
+            setResponse(response,httpStatus.toString(),
+                    "Invalid contactID: "+contact.getContactId()+" received!");
         }
 
         return ResponseEntity

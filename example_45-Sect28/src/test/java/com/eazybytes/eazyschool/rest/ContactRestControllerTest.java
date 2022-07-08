@@ -190,4 +190,45 @@ class ContactRestControllerTest {
 
     }
 
+    @Test
+    @WithMockUser(username = "Mock User")
+    void closeMsgContactIdExists() throws Exception {
+        // Given
+        Contact contactToUpdate = new Contact();
+        contactToUpdate.setContactId(1);
+        given(contactRepoSrvMock.findById(anyInt())).willReturn(Optional.of(contactToUpdate));
+
+        mockMvc.perform(patch("/api/contact/closeMsg")
+                        .content(objectMapper.writeValueAsString(contactToUpdate))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.statusCode").value(equalTo("200 OK")))
+                .andExpect(jsonPath("$.statusMsg").value(equalTo("Message successfully updated!!")))
+                .andDo(print());
+
+        verify(contactRepoSrvMock).save(any());
+
+    }
+
+    @Test
+    @WithMockUser(username = "Mock User")
+    void closeMsgContactIdDoesNotExists() throws Exception {
+        // Given
+        Contact contactToUpdate = new Contact();
+        contactToUpdate.setContactId(1);
+        given(contactRepoSrvMock.findById(contactToUpdate.getContactId())).willReturn(Optional.empty());
+
+        mockMvc.perform(patch("/api/contact/closeMsg")
+                        .content(objectMapper.writeValueAsString(contactToUpdate))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.statusCode").value(equalTo("400 BAD_REQUEST")))
+                .andExpect(jsonPath("$.statusMsg").value(equalTo("Invalid contactID: 1 received!")))
+                .andDo(print());
+
+        verify(contactRepoSrvMock,never()).save(any());
+
+    }
 }
