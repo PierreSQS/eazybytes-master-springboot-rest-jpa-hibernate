@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -18,6 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -33,6 +36,9 @@ class ContactRestControllerTest {
 
     private Contact validContact, contactWithInvalidEmail;
     private List<Contact> contactMessagesMock;
+
+    @Captor
+    ArgumentCaptor<Contact> contactArgumentCaptor; // Captor to check if the Contact as been updated
 
     @Autowired
     ObjectMapper objectMapper;
@@ -207,7 +213,10 @@ class ContactRestControllerTest {
                 .andExpect(jsonPath("$.statusMsg").value(equalTo("Message successfully updated!!")))
                 .andDo(print());
 
-        verify(contactRepoSrvMock).save(any());
+        // Capture the value of the Contact to save
+        verify(contactRepoSrvMock).save(contactArgumentCaptor.capture());
+        // Then Check if status updated to "Closed"
+        assertThat(contactArgumentCaptor.getValue().getStatus()).isEqualToIgnoringCase(EazySchoolConstants.CLOSED);
 
     }
 
