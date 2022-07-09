@@ -6,7 +6,6 @@ import com.eazybytes.eazyschool.repository.ContactRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -23,6 +22,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.anyOf;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
@@ -140,8 +140,6 @@ class ContactRestControllerTest {
     @Test
     @WithMockUser(username = "Mock User")
     void saveMsgInvalidData() throws Exception {
-        String errorMsg = "Please provide a valid email address ; Subject must not be blank ; Message must not be blank ; Mobile number must not be blank";
-
         // When and Then
         mockMvc.perform(post("/api/contact/saveMsg")
                         .content(objectMapper.writeValueAsString(contactWithInvalidEmail))
@@ -150,7 +148,11 @@ class ContactRestControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.statusCode").value(equalTo("400 BAD_REQUEST")))
-                .andExpect(jsonPath("$.statusMsg").value(containsString(errorMsg)))
+                .andExpect(jsonPath("$.statusMsg").value(
+                        anyOf(containsString("Please provide a valid email"),
+                                containsString("Subject must not be blank"),
+                                containsString("Message must not be blank"),
+                                containsString("Mobile number must not be blank"))))
                 .andDo(print());
 
         verify(contactRepoSrvMock,never()).save(any());
