@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -136,23 +137,23 @@ class ContactRestControllerTest {
 
     }
 
-    @Disabled("Wrong assertions because of the actual GlobalExceptionController!!!!")
     @Test
     @WithMockUser(username = "Mock User")
     void saveMsgInvalidData() throws Exception {
-        // Given
+        String errorMsg = "Please provide a valid email address ; Subject must not be blank ; Message must not be blank ; Mobile number must not be blank";
+
+        // When and Then
         mockMvc.perform(post("/api/contact/saveMsg")
                         .content(objectMapper.writeValueAsString(contactWithInvalidEmail))
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("invocationFrom","Mock Unit Test"))
-                .andExpect(status().isCreated())
+                .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(header().string("isMsgSaved","true"))
-                .andExpect(jsonPath("$.statusCode").value(equalTo("201 CREATED")))
-                .andExpect(jsonPath("$.statusMsg").value(equalTo("Message saved successfully!")))
+                .andExpect(jsonPath("$.statusCode").value(equalTo("400 BAD_REQUEST")))
+                .andExpect(jsonPath("$.statusMsg").value(containsString(errorMsg)))
                 .andDo(print());
 
-        verify(contactRepoSrvMock).save(any());
+        verify(contactRepoSrvMock,never()).save(any());
 
     }
 
