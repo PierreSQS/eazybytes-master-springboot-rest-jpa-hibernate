@@ -6,6 +6,7 @@ import com.eazybytes.eazyschool.model.Response;
 import com.eazybytes.eazyschool.repository.ContactRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +17,7 @@ import java.util.Optional;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/contact")
+@RequestMapping(value = "/api/contact", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
 public class ContactRestController {
     private final ContactRepository contactRepo;
 
