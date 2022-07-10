@@ -52,7 +52,7 @@ Author URL: http://w3layouts.com
                     <a th:href="@{'/displayMessages/page/' + ${currentPage} + '?sortField=name&sortDir=' + ${reverseSortDir}}">Name</a>
                 </th>
                 <th class="sorting" scope="col">
-                    <a th:href="@{'/displayMessages/page/' + ${currentPage} + '?sortField=mobileNum&sortDir=' + ${reverseSortDir}}">Mobile Num</a>
+                    <a th:href="@{'/displayMessages/page/' + ${currentPage} + '?sortField=mobile_num&sortDir=' + ${reverseSortDir}}">Mobile Num</a>
                 </th>
                 <th class="sorting" scope="col">
                     <a th:href="@{'/displayMessages/page/' + ${currentPage} + '?sortField=email&sortDir=' + ${reverseSortDir}}">Email</a>
@@ -69,7 +69,7 @@ Author URL: http://w3layouts.com
             <tbody>
             <tr th:each="msg: ${contactMsgs}">
                 <td th:text="${msg.name}"></td>
-                <td th:text="${msg.mobileNum}"></td>
+                <td th:text="${msg.mobile_num}"></td>
                 <td th:text="${msg.email}"></td>
                 <td th:text="${msg.subject}"></td>
                 <td th:text="${msg.message}"></td>

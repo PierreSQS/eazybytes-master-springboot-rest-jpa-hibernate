@@ -84,8 +84,8 @@ class ContactControllerTest {
     @Test
     void saveMessageOK() throws Exception {
         // Given
-        contact1.setMobileNum("2121212122");
-        multiValueMap.add("mobileNum", contact1.getMobileNum());
+        contact1.setMobile_num("2121212122");
+        multiValueMap.add("mobile_num", contact1.getMobile_num());
 
         // When, Then
         mockMvc.perform(post("/saveMsg").params(multiValueMap))
@@ -100,15 +100,15 @@ class ContactControllerTest {
     @Test
     void saveMessageMobileNrWrong() throws Exception {
         // Given
-        contact1.setMobileNum("21212121221");
-        multiValueMap.add("mobileNum", contact1.getMobileNum());
+        contact1.setMobile_num("21212121221");
+        multiValueMap.add("mobile_num", contact1.getMobile_num());
 
         // When, Then
         mockMvc.perform(post("/saveMsg").params(multiValueMap))
                 .andExpect(status().isOk())
                 .andExpect(view().name("contact.html"))
                 .andExpect(model().attributeHasErrors())
-                .andExpect(model().attributeHasFieldErrors("contact","mobileNum"))
+                .andExpect(model().attributeHasFieldErrors("contact","mobile_num"))
                 .andExpect(content().string(containsString("Mobile number must be 10 digits")))
                 .andDo(print());
 
