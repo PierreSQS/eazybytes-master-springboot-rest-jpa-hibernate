@@ -3,6 +3,7 @@ package com.eazybytes.eazyschool.controller;
 import com.eazybytes.eazyschool.constants.WebClientConstants;
 import com.eazybytes.eazyschool.model.Contact;
 import com.eazybytes.eazyschool.proxy.ContactProxy;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,12 +11,14 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -23,15 +26,30 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class ContactControllerTest {
 
     private List<Contact> contactMessagesMock;
+    private Contact contactToSave;
 
     @Autowired
     MockMvc mockMvc;
 
+    @Autowired
+    ObjectMapper objectMapper;
+
     @MockBean
     ContactProxy contactProxyMock;
 
+    @MockBean
+    RestTemplate restTemplateMock;
+
     @BeforeEach
     void setUp() {
+        contactToSave = new Contact();
+        contactToSave.setName("Sarah Test");
+        contactToSave.setMobileNum("1234567890");
+        contactToSave.setEmail("sarah@example.com");
+        contactToSave.setMessage("Please contact me");
+        contactToSave.setSubject("concerning my music course");
+        contactToSave.setStatus(WebClientConstants.OPEN);
+
         Contact contact1 = new Contact();
         contact1.setContactId(1);
         contact1.setName("Sarah Test");
@@ -60,5 +78,15 @@ class ContactControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.size()").value(equalTo(2)))
                 .andDo(print());
+    }
+
+    @Test
+    void saveMsg() throws Exception {
+        mockMvc.perform(post("/saveMsg")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(contactToSave)))
+                .andExpect(status().isOk())
+                .andDo(print());
+
     }
 }
