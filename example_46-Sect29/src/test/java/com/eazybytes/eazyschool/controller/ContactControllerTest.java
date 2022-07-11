@@ -2,16 +2,22 @@ package com.eazybytes.eazyschool.controller;
 
 import com.eazybytes.eazyschool.constants.WebClientConstants;
 import com.eazybytes.eazyschool.model.Contact;
+import com.eazybytes.eazyschool.model.Response;
 import com.eazybytes.eazyschool.proxy.ContactProxy;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.client.MockMvcWebTestClient;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -32,6 +38,9 @@ class ContactControllerTest {
     MockMvc mockMvc;
 
     @Autowired
+    WebTestClient webTestClient;
+
+    @Autowired
     ObjectMapper objectMapper;
 
     @MockBean
@@ -40,8 +49,16 @@ class ContactControllerTest {
     @MockBean
     RestTemplate restTemplateMock;
 
+    @MockBean
+    WebClient webClientMock;
+
     @BeforeEach
     void setUp() {
+
+//        webTestClient = MockMvcWebTestClient.
+//                bindToController(new ContactController(contactProxyMock,restTemplateMock,webClientMock))
+//                .build();;
+
         contactToSave = new Contact();
         contactToSave.setName("Sarah Test");
         contactToSave.setMobileNum("1234567890");
@@ -89,4 +106,16 @@ class ContactControllerTest {
                 .andDo(print());
 
     }
+
+    @Test
+    void saveMessage() {
+        webTestClient.post().uri("/saveMessage")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Mono.just(contactToSave),Response.class)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .returnResult(Response.class);
+    }
+
 }
