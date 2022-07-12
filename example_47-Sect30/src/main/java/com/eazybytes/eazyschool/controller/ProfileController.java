@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
-@Controller(value = "EazyProfileController")
+@Controller
 public class ProfileController {
 
     public static final String LOGGED_USER = "loggedUser";
