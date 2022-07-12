@@ -41,8 +41,7 @@ public class Contact extends BaseEntity{
 
     @NotBlank(message="Mobile number must not be blank")
     @Pattern(regexp="(^$|[0-9]{10})",message = "Mobile number must be 10 digits")
-    // exceptionally to allow the JPA to find the column (Native Query in the ContactRepository)
-    private String mobile_num;
+    private String mobileNum;
     @NotBlank(message="Email must not be blank")
     @Email(message = "Please provide a valid email address" )
     private String email;

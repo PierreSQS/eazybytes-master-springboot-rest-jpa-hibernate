@@ -56,7 +56,7 @@ class ContactRestControllerTest {
         validContact = new Contact();
         validContact.setName("Pierrot Test");
         validContact.setEmail("pierrot@example.com");
-        validContact.setMobile_num("1234567890");
+        validContact.setMobileNum("1234567890");
         validContact.setMessage("Please contact me");
         validContact.setStatus(EazySchoolConstants.CLOSED);
         validContact.setSubject("Very urgent");
