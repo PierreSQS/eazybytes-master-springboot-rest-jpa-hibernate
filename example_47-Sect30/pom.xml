@@ -12,7 +12,7 @@
 	<artifactId>example_47-Sect30</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>example_47-Sect30</name>
-	<description>ManyToMany mapping demo using Courses, Students</description>
+	<description>Section 30: Deep dive on Spring Data Rest and HAL Explorer</description>
 	<properties>
 		<java.version>17</java.version>
 	</properties>
@@ -61,8 +61,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.data</groupId>
-			<artifactId>spring-data-rest-hal-browser</artifactId>
-			<version>3.1.9.RELEASE</version>
+			<artifactId>spring-data-rest-hal-explorer</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>mysql</groupId>
@@ -70,13 +69,13 @@
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.fasterxml.jackson.dataformat</groupId>
-			<artifactId>jackson-dataformat-xml</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-aspects</artifactId>
 			<version>5.3.20</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.dataformat</groupId>
+			<artifactId>jackson-dataformat-xml</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
