@@ -22,8 +22,8 @@ public class EazyschoolApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) {
-		log.info("########## Let's inspect the beans provided by Spring Boot: " +
-				"########## Let's inspect the beans provided by Spring Boot:");
+		log.info("########## Let's inspect the beans in the context with: " +
+				"name containing 'profileController'##########");
 
 		String[] beanNames = appCtx.getBeanDefinitionNames();
 
