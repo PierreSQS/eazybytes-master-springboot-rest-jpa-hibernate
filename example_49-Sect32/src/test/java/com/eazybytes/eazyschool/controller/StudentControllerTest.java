@@ -1,11 +1,13 @@
 package com.eazybytes.eazyschool.controller;
 
+import com.eazybytes.eazyschool.config.EazySchoolProps;
 import com.eazybytes.eazyschool.model.Course;
 import com.eazybytes.eazyschool.model.Person;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -16,6 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(StudentController.class)
+@Import(EazySchoolProps.class)
 class StudentControllerTest {
 
     private Person personMock;
