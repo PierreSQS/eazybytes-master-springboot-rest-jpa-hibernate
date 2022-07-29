@@ -1,5 +1,6 @@
 package com.eazybytes.eazyschool;
 
+import com.eazybytes.eazyschool.config.EazySchoolProps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -17,9 +18,12 @@ public class EazyschoolApplication implements CommandLineRunner {
 
 	private final Environment env;
 
-	public EazyschoolApplication(ApplicationContext appCtx, Environment env) {
+	private final EazySchoolProps eazySchoolProps;
+
+	public EazyschoolApplication(ApplicationContext appCtx, Environment env, EazySchoolProps eazySchoolProps) {
 		this.appCtx = appCtx;
 		this.env = env;
+		this.eazySchoolProps = eazySchoolProps;
 	}
 
 	public static void main(String[] args) {
@@ -28,6 +32,17 @@ public class EazyschoolApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) {
+		displayBeansByName();
+		displayCustomProps();
+		displayCitiesFromPropsFile(eazySchoolProps);
+	}
+
+	private void displayCustomProps() {
+		log.info("########## username: {} ##########",env.getProperty("USERNAME")); // System Env. variable
+		log.info("########## custom default page size: {} ##########",env.getProperty("eazyschool.defaultPageSize"));
+	}
+
+	private void displayBeansByName() {
 		log.info("########## Let's inspect the beans in the context with " +
 				"name containing 'profileController'##########");
 
@@ -36,8 +51,11 @@ public class EazyschoolApplication implements CommandLineRunner {
 		Arrays.stream(beanNames)
 				.filter(beanName -> beanName.contains("rofileController"))
 				.forEach(log::info);
+	}
 
-		log.info("########## username: {} ##########",env.getProperty("USERNAME")); // System Env. variable
-		log.info("########## custom page size: {} ##########",env.getProperty("eazyschool.pageSize"));
+	private void displayCitiesFromPropsFile(EazySchoolProps eazySchoolProps) {
+		log.info("");
+		log.info("########## the cities in props-file ##########");
+		eazySchoolProps.getCities().forEach(city -> log.info("########## {} ##########",city));
 	}
 }

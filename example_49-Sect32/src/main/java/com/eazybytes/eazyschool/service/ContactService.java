@@ -1,31 +1,28 @@
 package com.eazybytes.eazyschool.service;
 
+import com.eazybytes.eazyschool.config.EazySchoolProps;
 import com.eazybytes.eazyschool.constants.EazySchoolConstants;
 import com.eazybytes.eazyschool.model.Contact;
 import com.eazybytes.eazyschool.repository.ContactRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-/*
-@Slf4j, is a Lombok-provided annotation that will automatically generate an SLF4J
-Logger static property in the class at compilation time.
-* */
+import java.util.Map;
+
 @Slf4j
 @Service
 public class ContactService {
 
     private final ContactRepository contactRepository;
+    private final EazySchoolProps eazySchoolProps;
 
-    @Value("${eazyschool.pageSize}")
-    private int defaultPageSize;
-
-    public ContactService(ContactRepository contactRepository) {
+    public ContactService(ContactRepository contactRepository, EazySchoolProps eazySchoolProps) {
         this.contactRepository = contactRepository;
+        this.eazySchoolProps = eazySchoolProps;
     }
 
     /**
@@ -40,7 +37,18 @@ public class ContactService {
     }
 
     public Page<Contact> findMsgsWithOpenStatus(int pageNum, String sortField, String sortDir){
-        int pageSize = defaultPageSize;
+        int pageSize = 5;
+        int defaultPageSize = eazySchoolProps.getDefaultPageSize();
+
+        if (defaultPageSize == 0) {
+            pageSize = defaultPageSize;
+        }
+
+        Map<String, String> contactPropertiesMap = eazySchoolProps.getContact();
+
+        if (contactPropertiesMap != null && contactPropertiesMap.get("pageSize") != null) {
+            pageSize = Integer.parseInt(contactPropertiesMap.get("pageSize"));
+        }
 
         Pageable pageable = PageRequest.of(pageNum-1, pageSize,
                 sortDir.equals("asc")?Sort.by(sortField).ascending():Sort.by(sortField).descending());
