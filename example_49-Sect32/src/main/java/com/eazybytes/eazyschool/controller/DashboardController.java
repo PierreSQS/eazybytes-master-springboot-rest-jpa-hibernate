@@ -35,16 +35,7 @@ public class DashboardController {
         // This is also the object that will be saved
         // for the Student Dashboard (e.g. with the courses)
         httpSession.setAttribute("loggedUser",foundPersByEmail);
-        logMessages();
         return "dashboard.html";
-    }
-
-    private void logMessages() {
-        log.error("######## Error Msg from DashboardController ########");
-        log.warn("######## Warning Msg from DashboardController ########");
-        log.info("######## Info Msg from DashboardController ########");
-        log.debug("######## Debug Msg from DashboardController ########");
-        log.trace("######## Trace Msg from DashboardController ########");
     }
 
 }
