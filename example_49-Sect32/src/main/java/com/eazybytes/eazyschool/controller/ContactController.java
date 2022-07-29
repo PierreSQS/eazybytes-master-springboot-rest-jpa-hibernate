@@ -3,6 +3,7 @@ package com.eazybytes.eazyschool.controller;
 import com.eazybytes.eazyschool.model.Contact;
 import com.eazybytes.eazyschool.service.ContactService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -17,6 +18,9 @@ import java.util.List;
 @Slf4j
 @Controller
 public class ContactController {
+
+    @Value("${eazyschool.contact.successMsg}")
+    private String message;
 
     private final ContactService contactService;
 
@@ -38,7 +42,10 @@ public class ContactController {
             return "contact.html";
         }
         boolean isContactSaved = contactService.saveMessageDetails(contact);
-        if (isContactSaved) log.info("#### 1 contact saved #########");
+        if (isContactSaved) {
+            log.info("######### 1 contact saved #########");
+            log.info(String.format("### %s ###%n",message));
+        }
         return "redirect:/contact";
     }
 

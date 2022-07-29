@@ -4,6 +4,7 @@ import com.eazybytes.eazyschool.constants.EazySchoolConstants;
 import com.eazybytes.eazyschool.model.Contact;
 import com.eazybytes.eazyschool.repository.ContactRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +20,9 @@ Logger static property in the class at compilation time.
 public class ContactService {
 
     private final ContactRepository contactRepository;
+
+    @Value("${eazyschool.pageSize}")
+    private int defaultPageSize;
 
     public ContactService(ContactRepository contactRepository) {
         this.contactRepository = contactRepository;
@@ -36,7 +40,7 @@ public class ContactService {
     }
 
     public Page<Contact> findMsgsWithOpenStatus(int pageNum, String sortField, String sortDir){
-        int pageSize = 5;
+        int pageSize = defaultPageSize;
 
         Pageable pageable = PageRequest.of(pageNum-1, pageSize,
                 sortDir.equals("asc")?Sort.by(sortField).ascending():Sort.by(sortField).descending());
