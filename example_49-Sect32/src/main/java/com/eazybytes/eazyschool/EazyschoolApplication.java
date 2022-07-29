@@ -1,11 +1,11 @@
 package com.eazybytes.eazyschool;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
+import org.springframework.core.env.Environment;
 
 import java.util.Arrays;
 
@@ -13,8 +13,14 @@ import java.util.Arrays;
 @SpringBootApplication
 public class EazyschoolApplication implements CommandLineRunner {
 
-	@Autowired
-	ApplicationContext appCtx;
+	private final ApplicationContext appCtx;
+
+	private final Environment env;
+
+	public EazyschoolApplication(ApplicationContext appCtx, Environment env) {
+		this.appCtx = appCtx;
+		this.env = env;
+	}
 
 	public static void main(String[] args) {
 		SpringApplication.run(EazyschoolApplication.class, args);
@@ -30,5 +36,8 @@ public class EazyschoolApplication implements CommandLineRunner {
 		Arrays.stream(beanNames)
 				.filter(beanName -> beanName.contains("rofileController"))
 				.forEach(log::info);
+
+		log.info("########## username: {} ##########",env.getProperty("USERNAME")); // System Env. variable
+		log.info("########## custom page size: {} ##########",env.getProperty("eazyschool.pageSize"));
 	}
 }
