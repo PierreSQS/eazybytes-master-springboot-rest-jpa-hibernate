@@ -37,17 +37,15 @@ public class ContactService {
     }
 
     public Page<Contact> findMsgsWithOpenStatus(int pageNum, String sortField, String sortDir){
-        int pageSize = 5;
-        int defaultPageSize = eazySchoolProps.getDefaultPageSize();
-
-        if (defaultPageSize == 0) {
-            pageSize = defaultPageSize;
-        }
-
+        // There is a validation on the default page size in EazySchoolProps
+        int pageSize = eazySchoolProps.getDefaultPageSize();
         Map<String, String> contactPropertiesMap = eazySchoolProps.getContact();
 
         if (contactPropertiesMap != null && contactPropertiesMap.get("pageSize") != null) {
             pageSize = Integer.parseInt(contactPropertiesMap.get("pageSize"));
+            log.info("####### using the page size from the custom properties: {} #######",pageSize);
+        } else  {
+            log.info("####### using the default page size from the custom properties: {} #######",pageSize);
         }
 
         Pageable pageable = PageRequest.of(pageNum-1, pageSize,
