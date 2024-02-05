@@ -1,6 +1,7 @@
 package com.eazybytes.eazyschool;
 
 import com.eazybytes.eazyschool.config.EazySchoolProps;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -11,6 +12,7 @@ import org.springframework.core.env.Environment;
 import java.util.Arrays;
 
 @Slf4j
+@RequiredArgsConstructor
 @SpringBootApplication
 public class EazyschoolApplication implements CommandLineRunner {
 
@@ -20,11 +22,6 @@ public class EazyschoolApplication implements CommandLineRunner {
 
 	private final EazySchoolProps eazySchoolProps;
 
-	public EazyschoolApplication(ApplicationContext appCtx, Environment env, EazySchoolProps eazySchoolProps) {
-		this.appCtx = appCtx;
-		this.env = env;
-		this.eazySchoolProps = eazySchoolProps;
-	}
 
 	public static void main(String[] args) {
 		SpringApplication.run(EazyschoolApplication.class, args);
@@ -35,6 +32,7 @@ public class EazyschoolApplication implements CommandLineRunner {
 		displayBeansByName();
 		displayCustomProps();
 		displayCitiesFromPropsFile(eazySchoolProps);
+		displayContactsFromPropsFile(eazySchoolProps);
 	}
 
 	private void displayCustomProps() {
@@ -57,5 +55,11 @@ public class EazyschoolApplication implements CommandLineRunner {
 		log.info("");
 		log.info("########## the cities in props-file ##########");
 		eazySchoolProps.getCities().forEach(city -> log.info("########## {} ##########",city));
+	}
+
+	private void displayContactsFromPropsFile(EazySchoolProps eazySchoolProps) {
+		log.info("");
+		log.info("########## the contacts in props-file ##########");
+		eazySchoolProps.getContact().entrySet().forEach(mapEntry -> log.info("########## {} ##########",mapEntry));
 	}
 }
