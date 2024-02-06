@@ -3,7 +3,7 @@ package com.eazybytes.eazyschool.model;
 import lombok.*;
 import org.hibernate.Hibernate;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
