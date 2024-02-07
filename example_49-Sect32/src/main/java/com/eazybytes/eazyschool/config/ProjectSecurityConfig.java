@@ -2,53 +2,54 @@ package com.eazybytes.eazyschool.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
-public class ProjectSecurityConfig extends WebSecurityConfigurerAdapter {
+public class ProjectSecurityConfig {
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    @Bean
+    SecurityFilterChain configure(HttpSecurity http) throws Exception {
 
-            http.csrf()
-                    .ignoringAntMatchers("/saveMsg")
-                    .ignoringAntMatchers("/h2-console/**")
-                    .ignoringAntMatchers("/public/**")
-                    .ignoringAntMatchers("/api/**")
-                    .ignoringAntMatchers("/data-rest/**")
-                .and()
-                    .headers().frameOptions().sameOrigin()
-                .and()
-                    .authorizeRequests()
-                    .mvcMatchers("/dashboard").authenticated()
-                    .mvcMatchers("/displayProfile").authenticated()
-                    .mvcMatchers("/updateProfile").authenticated()
-                    .mvcMatchers("/api/**").authenticated()
-                    .mvcMatchers("/data-rest/**").authenticated()
-                    .mvcMatchers("/displayMessages/**").hasRole("ADMIN")
-                    .mvcMatchers("/admin/**").hasRole("ADMIN")
-                    .mvcMatchers("/student/**").hasRole("STUDENT")
-                    .mvcMatchers("/h2-console/**").permitAll()
-                    .mvcMatchers("/home").permitAll()
-                    .mvcMatchers("/holidays/**").permitAll()
-                    .mvcMatchers("/contact").permitAll()
-                    .mvcMatchers("/saveMsg").permitAll()
-                    .mvcMatchers("/courses").permitAll()
-                    .mvcMatchers("/about").permitAll()
-                    .mvcMatchers("/login").permitAll()
-                    .mvcMatchers("/public/**").permitAll()
-                .and()
-                    .formLogin().loginPage("/login")
-                    .defaultSuccessUrl("/dashboard")
-                    .failureUrl("/login?error=true").permitAll()
-                .and()
-                    .logout().logoutSuccessUrl("/login?logout=true")
-                    .invalidateHttpSession(true).permitAll()
-                .and()
-                    .httpBasic();
+        http.csrf(csrfConfigurer -> csrfConfigurer
+                     .ignoringRequestMatchers("/saveMsg")
+                     .ignoringRequestMatchers("/h2-console/**")
+                     .ignoringRequestMatchers("/public/**")
+                     .ignoringRequestMatchers("/api/**")
+                     .ignoringRequestMatchers("/data-rest/**"))
+             .headers(headers -> headers
+                     .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
+             .authorizeHttpRequests(authorize -> authorize
+                     .requestMatchers("/dashboard").authenticated()
+                     .requestMatchers("/displayProfile").authenticated()
+                     .requestMatchers("/updateProfile").authenticated()
+                     .requestMatchers("/api/**").authenticated()
+                     .requestMatchers("/data-rest/**").authenticated()
+                     .requestMatchers("/displayMessages/**").hasRole("ADMIN")
+                     .requestMatchers("/admin/**").hasRole("ADMIN")
+                     .requestMatchers("/student/**").hasRole("STUDENT")
+                     .requestMatchers("/h2-console/**").permitAll()
+                     .requestMatchers("/home").permitAll()
+                     .requestMatchers("/holidays/**").permitAll()
+                     .requestMatchers("/contact").permitAll()
+                     .requestMatchers("/saveMsg").permitAll()
+                     .requestMatchers("/courses").permitAll()
+                     .requestMatchers("/about").permitAll()
+                     .requestMatchers("/login").permitAll())
+             .formLogin(loginConfigurer -> loginConfigurer
+                     .loginPage("/login")
+                     .defaultSuccessUrl("/dashboard")
+                     .failureUrl("").permitAll())
+             .logout(logoutConfigurer -> logoutConfigurer
+                     .logoutSuccessUrl("/login?logout=true")
+                     .invalidateHttpSession(true).permitAll())
+             .httpBasic(Customizer.withDefaults());
+
+            return http.build();
     }
 
     @Bean
