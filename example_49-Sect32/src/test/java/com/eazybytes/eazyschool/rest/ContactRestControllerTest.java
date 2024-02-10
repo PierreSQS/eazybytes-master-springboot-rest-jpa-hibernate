@@ -1,6 +1,7 @@
 package com.eazybytes.eazyschool.rest;
 
 import com.eazybytes.eazyschool.config.EazySchoolProps;
+import com.eazybytes.eazyschool.config.ProjectSecurityConfig;
 import com.eazybytes.eazyschool.constants.EazySchoolConstants;
 import com.eazybytes.eazyschool.model.Contact;
 import com.eazybytes.eazyschool.repository.ContactRepository;
@@ -35,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @Slf4j
 @WebMvcTest(ContactRestController.class)
-@Import(EazySchoolProps.class)
+@Import({EazySchoolProps.class, ProjectSecurityConfig.class})
 class ContactRestControllerTest {
 
     private Contact validContact, contactWithInvalidEmail;
