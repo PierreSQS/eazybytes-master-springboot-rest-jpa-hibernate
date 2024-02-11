@@ -10,16 +10,18 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import static org.springframework.boot.autoconfigure.security.servlet.PathRequest.toH2Console;
+
 @Configuration
 @EnableWebSecurity
 public class ProjectSecurityConfig {
 
     @Bean
-    SecurityFilterChain configure(HttpSecurity http) throws Exception {
+    public SecurityFilterChain configure(HttpSecurity http) throws Exception {
 
         http.csrf(csrfConfigurer -> csrfConfigurer
                      .ignoringRequestMatchers("/saveMsg")
-                     .ignoringRequestMatchers("/h2-console/**")
+                     .ignoringRequestMatchers(toH2Console())
                      .ignoringRequestMatchers("/public/**")
                      .ignoringRequestMatchers("/api/**")
                      .ignoringRequestMatchers("/data-rest/**"))
@@ -34,7 +36,7 @@ public class ProjectSecurityConfig {
                      .requestMatchers("/displayMessages/**").hasRole("ADMIN")
                      .requestMatchers("/admin/**").hasRole("ADMIN")
                      .requestMatchers("/student/**").hasRole("STUDENT")
-                     .requestMatchers("/h2-console/**").permitAll()
+                     .requestMatchers(toH2Console()).permitAll()
                      .requestMatchers("/home").permitAll()
                      .requestMatchers("/holidays/**").permitAll()
                      .requestMatchers("/contact").permitAll()
@@ -45,7 +47,7 @@ public class ProjectSecurityConfig {
              .formLogin(loginConfigurer -> loginConfigurer
                      .loginPage("/login")
                      .defaultSuccessUrl("/dashboard")
-                     .failureUrl("/").permitAll())
+                     .failureUrl("/login?error=true").permitAll())
              .logout(logoutConfigurer -> logoutConfigurer
                      .logoutSuccessUrl("/login?logout=true")
                      .invalidateHttpSession(true).permitAll())
