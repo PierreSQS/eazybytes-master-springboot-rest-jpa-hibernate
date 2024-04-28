@@ -1,11 +1,13 @@
 package com.eazybytes.eazyschool.controller;
 
 import com.eazybytes.eazyschool.config.EazySchoolProps;
+import com.eazybytes.eazyschool.config.ProjectSecurityConfig;
 import com.eazybytes.eazyschool.model.Contact;
 import com.eazybytes.eazyschool.service.ContactService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.h2.H2ConsoleProperties;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
@@ -28,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(ContactController.class)
-@Import(EazySchoolProps.class)
+@Import({EazySchoolProps.class, ProjectSecurityConfig.class, H2ConsoleProperties.class})
 class ContactControllerTest {
 
     private MultiValueMap<String, String> multiValueMap;
