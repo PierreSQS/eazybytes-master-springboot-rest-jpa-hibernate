@@ -1,9 +1,11 @@
 package com.eazybytes.eazyschool.controller;
 
 import com.eazybytes.eazyschool.config.EazySchoolProps;
+import com.eazybytes.eazyschool.config.ProjectSecurityConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.h2.H2ConsoleProperties;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
@@ -14,7 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(LoginController.class)
-@Import(EazySchoolProps.class)
+@Import({EazySchoolProps.class, ProjectSecurityConfig.class, H2ConsoleProperties.class})
 class LoginControllerTest {
 
     @Autowired

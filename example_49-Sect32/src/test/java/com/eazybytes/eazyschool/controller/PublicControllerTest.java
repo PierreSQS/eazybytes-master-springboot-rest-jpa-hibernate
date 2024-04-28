@@ -12,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -70,6 +71,7 @@ class PublicControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "Mock Admin",roles = {"ADMIN"})
     void displayRegistrationPage() throws Exception {
         mockMvc.perform(get("/public/register"))
                 .andExpect(status().isOk())
@@ -80,6 +82,7 @@ class PublicControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "Mock Admin",roles = {"ADMIN"})
     void createUserOK() throws Exception {
 
         MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>();
@@ -109,6 +112,7 @@ class PublicControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "Mock Admin",roles = {"ADMIN"})
     void createUserWithoutPWD() throws Exception {
 
         MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>();

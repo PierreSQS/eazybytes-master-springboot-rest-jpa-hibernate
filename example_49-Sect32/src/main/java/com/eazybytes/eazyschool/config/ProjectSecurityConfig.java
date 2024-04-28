@@ -33,6 +33,7 @@ public class ProjectSecurityConfig {
                      .requestMatchers("/updateProfile").authenticated()
                      .requestMatchers("/api/**").authenticated()
                      .requestMatchers("/data-rest/**").authenticated()
+                     .requestMatchers("/closeMsg/**").hasRole("ADMIN")
                      .requestMatchers("/displayMessages/**").hasRole("ADMIN")
                      .requestMatchers("/admin/**").hasRole("ADMIN")
                      .requestMatchers("/student/**").hasRole("STUDENT")
@@ -43,6 +44,7 @@ public class ProjectSecurityConfig {
                      .requestMatchers("/saveMsg").permitAll()
                      .requestMatchers("/courses").permitAll()
                      .requestMatchers("/about").permitAll()
+                     .requestMatchers("/logout").permitAll()
                      .requestMatchers("/login").permitAll())
              .formLogin(loginConfigurer -> loginConfigurer
                      .loginPage("/login")
