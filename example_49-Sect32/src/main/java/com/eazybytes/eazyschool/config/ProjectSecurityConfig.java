@@ -45,7 +45,8 @@ public class ProjectSecurityConfig {
                      .requestMatchers("/courses").permitAll()
                      .requestMatchers("/about").permitAll()
                      .requestMatchers("/logout").permitAll()
-                     .requestMatchers("/login").permitAll())
+                     .requestMatchers("/login").permitAll()
+                     .requestMatchers("/public/**").permitAll())
              .formLogin(loginConfigurer -> loginConfigurer
                      .loginPage("/login")
                      .defaultSuccessUrl("/dashboard")
