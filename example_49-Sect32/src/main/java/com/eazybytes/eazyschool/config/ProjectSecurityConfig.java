@@ -40,8 +40,7 @@ public class ProjectSecurityConfig {
                      .requestMatchers("/displayMessages/**").hasRole("ADMIN")
                      .requestMatchers("/admin/**").hasRole("ADMIN")
                      .requestMatchers("/student/**").hasRole("STUDENT")
-                     .requestMatchers(toH2Console()).permitAll()
-                     .requestMatchers("/home").permitAll()
+                     .requestMatchers("/","/home").permitAll() // empty pattern "" is no more allowed
                      .requestMatchers("/holidays/**").permitAll()
                      .requestMatchers("/contact").permitAll()
                      .requestMatchers("/saveMsg").permitAll()
@@ -49,7 +48,8 @@ public class ProjectSecurityConfig {
                      .requestMatchers("/about").permitAll()
                      .requestMatchers("/logout").permitAll()
                      .requestMatchers("/login").permitAll()
-                     .requestMatchers("/public/**").permitAll())
+                     .requestMatchers("/public/**").permitAll()
+                     .requestMatchers(toH2Console()).permitAll())
              .formLogin(loginConfigurer -> loginConfigurer
                      .loginPage("/login")
                      .defaultSuccessUrl("/dashboard")
