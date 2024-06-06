@@ -46,6 +46,7 @@ public class ProjectSecurityConfig {
                      .requestMatchers("/about").permitAll()
                      .requestMatchers("/logout").permitAll()
                      .requestMatchers("/login").permitAll()
+                     .requestMatchers("/assets/**").permitAll()
                      .requestMatchers("/public/**").permitAll()
                      .requestMatchers(toH2Console()).permitAll())
                 .headers(headers -> headers
