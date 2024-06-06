@@ -3,6 +3,7 @@ package com.eazybytes.eazyschool.security;
 import com.eazybytes.eazyschool.model.Person;
 import com.eazybytes.eazyschool.model.Roles;
 import com.eazybytes.eazyschool.repository.PersonRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,16 +16,13 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @Component
 public class EazySchoolUserNamePwdAuthenticationProvider implements AuthenticationProvider {
     private final PersonRepository personRepo;
 
     private final PasswordEncoder passwordEncoder;
 
-    public EazySchoolUserNamePwdAuthenticationProvider(PersonRepository personRepo, PasswordEncoder passwordEncoder) {
-        this.personRepo = personRepo;
-        this.passwordEncoder = passwordEncoder;
-    }
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {

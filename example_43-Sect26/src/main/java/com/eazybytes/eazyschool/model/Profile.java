@@ -15,7 +15,7 @@ public class Profile {
     private String name;
 
     @NotBlank(message="Mobile number must not be blank")
-    @Pattern(regexp="(^$|[0-9]{10})",message = "Mobile number must be 10 digits")
+    @Pattern(regexp="(^$|\\d{10})",message = "Mobile number must be 10 digits")
     private String mobileNumber;
 
     @NotBlank(message="Email must not be blank")
@@ -37,6 +37,6 @@ public class Profile {
     private String state;
 
     @NotBlank(message="Zip Code must not be blank")
-    @Pattern(regexp="(^$|[0-9]{5})",message = "Zip Code must be 5 digits")
+    @Pattern(regexp="(^$|\\d{5})",message = "Zip Code must be 5 digits")
     private String zipCode;
 }

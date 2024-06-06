@@ -28,7 +28,7 @@ public class DashboardController {
         model.addAttribute("username", foundPersByEmail.getName());
         model.addAttribute("roles", authentication.getAuthorities().toString());
         // Displays the class to which a student is assigned
-        if (foundPersByEmail != null && foundPersByEmail.getEazyClass() != null) {
+        if (foundPersByEmail.getEazyClass() != null) {
             model.addAttribute("enrolledClass",foundPersByEmail.getEazyClass().getName());
         }
 
