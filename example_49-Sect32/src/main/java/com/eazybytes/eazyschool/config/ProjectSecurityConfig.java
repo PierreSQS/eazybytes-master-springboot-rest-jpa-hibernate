@@ -28,8 +28,6 @@ public class ProjectSecurityConfig {
                      .ignoringRequestMatchers("/public/**")
                      .ignoringRequestMatchers("/api/**")
                      .ignoringRequestMatchers("/data-rest/**"))
-             .headers(headers -> headers
-                     .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
              .authorizeHttpRequests(authorize -> authorize
                      .requestMatchers("/dashboard").authenticated()
                      .requestMatchers("/displayProfile").authenticated()
@@ -50,7 +48,9 @@ public class ProjectSecurityConfig {
                      .requestMatchers("/login").permitAll()
                      .requestMatchers("/public/**").permitAll()
                      .requestMatchers(toH2Console()).permitAll())
-             .formLogin(loginConfigurer -> loginConfigurer
+                .headers(headers -> headers
+                        .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
+                .formLogin(loginConfigurer -> loginConfigurer
                      .loginPage("/login")
                      .defaultSuccessUrl("/dashboard")
                      .failureUrl("/login?error=true").permitAll())

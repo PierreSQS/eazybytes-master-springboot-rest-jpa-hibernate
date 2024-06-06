@@ -29,8 +29,8 @@ INSERT INTO `roles` (`role_name`,`created_at`, `created_by`)
   VALUES ('STUDENT',CURDATE(),'DBA');
 
 INSERT INTO `person` (`name`,`email`,`pwd`,`mobile_number`,`created_at`, `created_by`, `role_id`)
-  VALUES ('user','user@eazyschool.com','$2a$10$90ABJ5EM9BMiewtCTxJJDu/fe/59XaFadcfLJ.YNJxp2e89IQf7Q2','2323232323',CURDATE(),'DBA',2);
+  VALUES ('user','user@eazyschool.com','$2a$10$EXH5ZD7afIS2dQ9CTI2WeOBjofhvd8xBqkQ9dS0GV/ZTNoZbXFJpe','2323232323',CURDATE(),'DBA',2);
 
 INSERT INTO `person` (`name`,`email`,`pwd`,`mobile_number`,`created_at`, `created_by`, `role_id`)
-  VALUES ('admin','admin@eazyschool.com','$2a$10$Iak07jw1WmxNeLv5iWjS3uIkU4GVlk53Gca/61n44Dl1IruM/0dDu','1212121212',CURDATE(),'DBA',1);
+  VALUES ('admin','admin@eazyschool.com','$2a$10$.kX761Sh6u7hUMmu4yJgTe2IIXnpdg.qip78KWdD1GfWj6v/rLFB.','1212121212',CURDATE(),'DBA',1);
 
