@@ -1,5 +1,6 @@
 package com.eazybytes.eazyschool.controller;
 
+import com.eazybytes.eazyschool.config.ProjectSecurityConfig;
 import com.eazybytes.eazyschool.model.Holiday;
 import com.eazybytes.eazyschool.service.HolidayService;
 import org.junit.jupiter.api.BeforeEach;
@@ -7,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
@@ -19,6 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(HolidaysController.class)
+@Import(value = {ProjectSecurityConfig.class})
 class HolidaysControllerTest {
     @Autowired
     MockMvc mockMvc;
