@@ -12,6 +12,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import static com.eazybytes.eazyschool.constants.EazySchoolConstants.ADMIN_ROLE;
+import static com.eazybytes.eazyschool.constants.EazySchoolConstants.STUDENT_ROLE;
 import static org.springframework.boot.autoconfigure.security.servlet.PathRequest.toH2Console;
 
 @Configuration
@@ -34,10 +36,10 @@ public class ProjectSecurityConfig {
                      .requestMatchers("/updateProfile").authenticated()
                      .requestMatchers("/api/**").authenticated()
                      .requestMatchers("/data-rest/**").authenticated()
-                     .requestMatchers("/closeMsg/**").hasRole("ADMIN")
-                     .requestMatchers("/displayMessages/**").hasRole("ADMIN")
-                     .requestMatchers("/admin/**").hasRole("ADMIN")
-                     .requestMatchers("/student/**").hasRole("STUDENT")
+                     .requestMatchers("/closeMsg/**").hasRole(ADMIN_ROLE)
+                     .requestMatchers("/displayMessages/**").hasRole(ADMIN_ROLE)
+                     .requestMatchers("/admin/**").hasRole(ADMIN_ROLE)
+                     .requestMatchers("/student/**").hasRole(STUDENT_ROLE)
                      .requestMatchers("/","/home").permitAll() // empty pattern "" is no more allowed
                      .requestMatchers("/holidays/**").permitAll()
                      .requestMatchers("/contact").permitAll()
