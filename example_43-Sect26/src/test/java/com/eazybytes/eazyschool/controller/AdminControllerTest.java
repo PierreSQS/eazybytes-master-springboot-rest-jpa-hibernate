@@ -1,5 +1,6 @@
 package com.eazybytes.eazyschool.controller;
 
+import com.eazybytes.eazyschool.config.ProjectSecurityConfig;
 import com.eazybytes.eazyschool.model.Course;
 import com.eazybytes.eazyschool.model.EazyClass;
 import com.eazybytes.eazyschool.model.Person;
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -35,6 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = {AdminController.class})
+@Import(value = {ProjectSecurityConfig.class})
 class AdminControllerTest {
 
     List<EazyClass> eazyClassesMock;
@@ -219,13 +222,13 @@ class AdminControllerTest {
     @WithMockUser(username = "Mock Admin",roles = {"ADMIN"})
     void deleteStudent() throws Exception {
         // Given
-        List<Person> studentsMock = this.studentsMock.stream().toList();
-        given(personRepoMock.findById(anyInt())).willReturn(Optional.of(studentsMock.get(0)));
+        List<Person> personListMock = this.studentsMock.stream().toList();
+        given(personRepoMock.findById(anyInt())).willReturn(Optional.of(personListMock.get(0)));
 
         EazyClass classMock = eazyClassesMock.get(0);
 
         // When, Then
-        mockMvc.perform(get("/admin/deleteStudent/?personId={id}",1)
+        mockMvc.perform(get("/admin/deleteStudent?personId={id}",1)
                         .with(csrf())
                         .sessionAttr("eazyClass",classMock))
                 .andExpect(status().is3xxRedirection())
