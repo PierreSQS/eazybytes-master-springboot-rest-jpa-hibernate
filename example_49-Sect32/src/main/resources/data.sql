@@ -29,10 +29,10 @@ INSERT INTO `roles` (`role_name`,`created_at`, `created_by`)
   VALUES ('STUDENT',CURDATE(),'DBA');
 
 INSERT INTO `person` (`name`,`email`,`pwd`,`mobile_number`,`created_at`, `created_by`, `role_id`)
-  VALUES ('user','user@eazyschool.com','$2a$10$90ABJ5EM9BMiewtCTxJJDu/fe/59XaFadcfLJ.YNJxp2e89IQf7Q2','2323232323',CURDATE(),'DBA',2);
+  VALUES ('user','user@eazyschool.com','$2a$10$ju2VrRoZaMVJiu3iOGGq8eHb0A88s4aAbWFUxmI8cP00RdL7Yh7lS','2323232323',CURDATE(),'DBA',2);
 
 INSERT INTO `person` (`name`,`email`,`pwd`,`mobile_number`,`created_at`, `created_by`, `role_id`)
-  VALUES ('admin','admin@eazyschool.com','$2a$10$Iak07jw1WmxNeLv5iWjS3uIkU4GVlk53Gca/61n44Dl1IruM/0dDu','1212121212',CURDATE(),'DBA',1);
+  VALUES ('admin','admin@eazyschool.com','$2a$10$vKvDb08tEQ9YiqpxP2ntCOZYA0u6bDYQi60TTPPWC3QapvFX.kcF6','1212121212',CURDATE(),'DBA',1);
 
 INSERT INTO `contact_msg` (`name`,`mobile_num`,`email`,`subject`,`message`,`status`,`created_at`, `created_by`)
   VALUES ('Adam','2176436587','zadam@gmail.com','Regarding a job','Wanted to join as teacher','Open',CURDATE(),'DBA');
