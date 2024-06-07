@@ -27,7 +27,8 @@ public class ProjectSecurityConfig {
                                 "/updateProfile").authenticated()
                         .requestMatchers(
                                 "/displayMessages/**",
-                                "/admin/**").hasRole(ADMIN_ROLE)
+                                "/admin/**",
+                                "/closeMsg/**").hasRole(ADMIN_ROLE)
                         .requestMatchers(
                                 "/student/**").hasRole(STUDENT_ROLE).
                         requestMatchers(

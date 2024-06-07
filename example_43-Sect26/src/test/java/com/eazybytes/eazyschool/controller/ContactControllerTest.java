@@ -1,5 +1,6 @@
 package com.eazybytes.eazyschool.controller;
 
+import com.eazybytes.eazyschool.config.ProjectSecurityConfig;
 import com.eazybytes.eazyschool.model.Contact;
 import com.eazybytes.eazyschool.service.ContactService;
 import org.junit.jupiter.api.BeforeEach;
@@ -7,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.*;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -26,6 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(ContactController.class)
+@Import(value = {ProjectSecurityConfig.class})
 class ContactControllerTest {
 
     private MultiValueMap<String, String> multiValueMap;
@@ -144,7 +147,7 @@ class ContactControllerTest {
                 .andExpect(model().attribute("currentPage",equalTo(pageNum)))
                 .andExpect(model().attribute("sortField",equalTo(sortField)))
                 .andExpect(model().attribute("sortDir",equalTo(sortDir)))
-                .andExpect(model().attribute("reverseSortDir",sortDir.equals("asc")?"desc":"asc"))
+                .andExpect(model().attribute("reverseSortDir", "desc"))
                 .andExpect(view().name("messages.html"))
                 .andExpect(content().string(containsString("Open Contact Messages")))
                 .andExpect(content().string(containsString("<td>Sarah Test</td>")))
@@ -153,7 +156,7 @@ class ContactControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "Mock User")
+    @WithMockUser(username = "Mock Admin", roles = {"ADMIN"})
     void closeMessageWithAuthenticatedUser() throws Exception {
         // Given
         given(contactSrvMock.updateContactStatus(anyInt())).willReturn(true);
