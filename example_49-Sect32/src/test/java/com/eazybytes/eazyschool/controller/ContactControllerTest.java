@@ -158,7 +158,7 @@ class ContactControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "Mock User")
+    @WithMockUser(username = "Mock Admin", roles = {"ADMIN"})
     void closeMessageWithAuthenticatedUser() throws Exception {
         // Given
         given(contactSrvMock.updateContactStatus(anyInt())).willReturn(true);
