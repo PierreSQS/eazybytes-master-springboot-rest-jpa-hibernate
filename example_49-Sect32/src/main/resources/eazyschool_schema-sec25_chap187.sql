@@ -1,6 +1,6 @@
-create database eazyschoolsection20db;
+create database eazybytesspringsecuritydb;
 
-use eazyschoolsection20db;
+use eazybytesspringsecuritydb;
 
 CREATE TABLE IF NOT EXISTS `contact_msg` (
   `contact_id` int AUTO_INCREMENT  PRIMARY KEY,
