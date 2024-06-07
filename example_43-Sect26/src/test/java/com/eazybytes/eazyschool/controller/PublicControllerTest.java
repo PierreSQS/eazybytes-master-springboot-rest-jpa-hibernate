@@ -1,5 +1,6 @@
 package com.eazybytes.eazyschool.controller;
 
+import com.eazybytes.eazyschool.config.ProjectSecurityConfig;
 import com.eazybytes.eazyschool.constants.EazySchoolConstants;
 import com.eazybytes.eazyschool.model.Person;
 import com.eazybytes.eazyschool.model.Roles;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
@@ -25,6 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(PublicController.class)
+@Import(value = {ProjectSecurityConfig.class})
 class PublicControllerTest {
 
     public static final String ERR_MSGS1 = "Confirm Password must not be blank";
