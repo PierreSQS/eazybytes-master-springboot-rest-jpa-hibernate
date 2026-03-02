@@ -1,6 +1,5 @@
 package com.eazybytes.jobportal.audit;
 
-import com.eazybytes.jobportal.util.ApplicationUtility;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.stereotype.Component;
 
@@ -11,6 +10,6 @@ public class AuditorAwareImpl implements AuditorAware<String> {
 
     @Override
     public Optional<String> getCurrentAuditor() {
-        return Optional.of(ApplicationUtility.getLoggedInUser());
+        return Optional.of("Anonymous User");
     }
 }
