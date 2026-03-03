@@ -2,11 +2,14 @@ package com.eazybytes.jobportal.contact.controller;
 
 import com.eazybytes.jobportal.contact.service.IContactService;
 import com.eazybytes.jobportal.dto.ContactRequestDto;
+import com.eazybytes.jobportal.dto.ContactResponseDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/contacts")
@@ -25,6 +28,12 @@ public class ContactController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Request processing failed");
         }
+    }
+
+    @GetMapping("/admin")
+    public ResponseEntity<List<ContactResponseDto>> fetchNewContactMsgs() {
+        List<ContactResponseDto> contactResponseDtos = contactService.fetchNewContactMsgs();
+        return ResponseEntity.status(HttpStatus.OK).body(contactResponseDtos);
     }
 
 }
