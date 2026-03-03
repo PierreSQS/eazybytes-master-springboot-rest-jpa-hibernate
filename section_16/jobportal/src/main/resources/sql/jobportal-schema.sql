@@ -1,3 +1,5 @@
+USE jobportal;
+
 -- Create companies table
 CREATE TABLE IF NOT EXISTS companies (
      id BIGINT AUTO_INCREMENT PRIMARY KEY,
