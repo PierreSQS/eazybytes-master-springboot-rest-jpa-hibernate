@@ -1,6 +1,5 @@
 package com.eazybytes.jobportal.company.controller;
 
-import com.eazybytes.jobportal.aspects.LogAspect;
 import com.eazybytes.jobportal.dto.CompanyDto;
 import com.eazybytes.jobportal.company.service.ICompanyService;
 import lombok.RequiredArgsConstructor;

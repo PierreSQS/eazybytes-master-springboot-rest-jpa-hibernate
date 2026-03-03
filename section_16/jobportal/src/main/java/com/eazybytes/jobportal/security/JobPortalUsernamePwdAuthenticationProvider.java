@@ -3,6 +3,7 @@ package com.eazybytes.jobportal.security;
 import com.eazybytes.jobportal.entity.JobPortalUser;
 import com.eazybytes.jobportal.repository.JobPortalUserRepository;
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -15,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Objects;
 
 @Component
 @RequiredArgsConstructor
@@ -26,7 +28,7 @@ public class JobPortalUsernamePwdAuthenticationProvider implements Authenticatio
     @Override
     public @Nullable Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String username = authentication.getName();
-        String pwd = authentication.getCredentials().toString();
+        String pwd = Objects.requireNonNull(authentication.getCredentials()).toString();
         JobPortalUser jobPortalUser = jobPortalUserRepository.findJobPortalUserByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException(
                         "User details not found for the user: " + username)
@@ -41,7 +43,7 @@ public class JobPortalUsernamePwdAuthenticationProvider implements Authenticatio
     }
 
     @Override
-    public boolean supports(Class<?> authentication) {
+    public boolean supports(@NonNull Class<?> authentication) {
         return (UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication));
     }
 }

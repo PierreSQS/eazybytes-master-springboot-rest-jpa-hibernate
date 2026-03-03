@@ -7,9 +7,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
-import jakarta.persistence.NamedNativeQueries;
 import jakarta.persistence.NamedNativeQuery;
-import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -25,15 +23,11 @@ import java.util.List;
 @Table(name = "COMPANIES")
 @Getter
 @Setter
-@NamedQueries({
-        @NamedQuery(name = "Company.fetchCompaniesWithJobsByStatus", query =
-                "SELECT DISTINCT c FROM Company c JOIN FETCH c.jobs j WHERE j.status = :status")
-})
-@NamedNativeQueries({
-        @NamedNativeQuery(name = "Company.fetchCompaniesWithJobsByStatusNative",
-                query = "SELECT DISTINCT c.* FROM companies c JOIN jobs j ON c.id = j.company_id WHERE j.status = ?",
-                resultClass = Company.class)
-})
+@NamedQuery(name = "Company.fetchCompaniesWithJobsByStatus", query =
+        "SELECT DISTINCT c FROM Company c JOIN FETCH c.jobs j WHERE j.status = :status")
+@NamedNativeQuery(name = "Company.fetchCompaniesWithJobsByStatusNative",
+        query = "SELECT DISTINCT c.* FROM companies c JOIN jobs j ON c.id = j.company_id WHERE j.status = ?",
+        resultClass = Company.class)
 public class Company extends BaseEntity {
 
     @Id
