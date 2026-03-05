@@ -68,10 +68,10 @@ public class JobPortalSecurityConfig {
     @Bean
     public UserDetailsService userDetailsService() {
         var user1 = User.builder().username("madan")
-                .password("$2a$10$viS6XrG2FpiZXPQgP7.rQeBrG6TauRaybxsaNjNi.WCLCdIURzZCq")
+                .password("$2a$12$.jL1dNyCYtSr3re0FTwKruFbxR4oq324REKZPDWM2uiBdLsgylSB2")
                 .roles("USER").build();
         var user2 = User.builder().username("admin")
-                .password("$2a$10$CurDmUEPRQsX5AhEN1NSV.ejUteU0S3dj5XfjxOjaVFhCCTOuj8WG")
+                .password("$2a$12$0u939y0JOgUAWfK07OK2M.KzX1Cp93LdaDQUj00BSFwvBWcOFho4K")
                 .roles("ADMIN").build();
         return new InMemoryUserDetailsManager(user1, user2);
     }
