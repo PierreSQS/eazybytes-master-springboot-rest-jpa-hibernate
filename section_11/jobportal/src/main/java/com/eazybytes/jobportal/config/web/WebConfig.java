@@ -2,11 +2,8 @@ package com.eazybytes.jobportal.config.web;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.config.annotation.ApiVersionConfigurer;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -18,7 +15,7 @@ public class WebConfig implements WebMvcConfigurer {
      * be enabled, you must configure at least one way to resolve the API
      * version from a request (e.g. via request header).
      *
-     * @param configurer
+     * @param configurer the configurer to use to set up API versioning
      * @since 7.0
      */
     @Override
@@ -32,7 +29,7 @@ public class WebConfig implements WebMvcConfigurer {
      * whether to use parsed {@code PathPatterns} or String pattern matching
      * with {@code PathMatcher}, whether to match trailing slashes, and more.
      *
-     * @param configurer
+     * @param configurer the configurer to use to set up path matching options
      * @see PathMatchConfigurer
      * @since 4.0.3
      */
