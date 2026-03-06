@@ -1,5 +1,6 @@
 package com.eazybytes.jobportal.auth;
 
+import com.eazybytes.jobportal.constants.ApplicationConstants;
 import com.eazybytes.jobportal.dto.LoginRequestDto;
 import com.eazybytes.jobportal.dto.LoginResponseDto;
 import com.eazybytes.jobportal.dto.RegisterRequestDto;
@@ -21,6 +22,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/auth")
@@ -60,17 +63,29 @@ public class AuthController {
     @PostMapping(value = "/register/public",version = "1.0")
     public ResponseEntity<String> registerUser(@RequestBody RegisterRequestDto registerRequestDto) {
 
-        JobPortalUser newJobPortalUser = new JobPortalUser();
-        BeanUtils.copyProperties(registerRequestDto, newJobPortalUser);
+        Optional<JobPortalUser> optNewJobPortalUser = jobPortalUserRepository
+                        .findUserByEmailOrMobileNumber(registerRequestDto.email(), registerRequestDto.mobileNumber());
 
-        newJobPortalUser.setPasswordHash(passwordEncoder.encode(registerRequestDto.password()));
+        if (optNewJobPortalUser.isPresent()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("User with the provided email or mobile number already exists");
+        } else {
+            JobPortalUser newJobPortalUser = new JobPortalUser();
 
-        newJobPortalUser.setRole(roleRepository.findById(1L)
-                .orElseThrow(() -> new RuntimeException("Role for User not found!!!")));
-        jobPortalUserRepository.save(newJobPortalUser);
+            BeanUtils.copyProperties(registerRequestDto, newJobPortalUser);
 
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body("User registered successfully");
+            newJobPortalUser.setPasswordHash(passwordEncoder.encode(registerRequestDto.password()));
+
+            var defaultRoleUser = roleRepository.findRoleByName(ApplicationConstants.ROLE_JOB_SEEKER)
+                    .orElseThrow(() -> new RuntimeException("Default role not found"));
+
+            newJobPortalUser.setRole(defaultRoleUser);
+
+            jobPortalUserRepository.save(newJobPortalUser);
+
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body("User registered successfully");
+        }
     }
 
     private ResponseEntity<LoginResponseDto> buildErrorResponse(HttpStatus status,
