@@ -29,12 +29,15 @@ public class JobPortalUsernamePwdAuthenticationProvider implements Authenticatio
     public @Nullable Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String username = authentication.getName();
         String pwd = Objects.requireNonNull(authentication.getCredentials()).toString();
+
         JobPortalUser jobPortalUser = jobPortalUserRepository.findJobPortalUserByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException(
                         "User details not found for the user: " + username)
         );
+
         List<SimpleGrantedAuthority> authorities = List.of(
                 new SimpleGrantedAuthority(jobPortalUser.getRole().getName()));
+
         if (passwordEncoder.matches(pwd, jobPortalUser.getPasswordHash())) {
             return new UsernamePasswordAuthenticationToken(jobPortalUser, null, authorities);
         } else {

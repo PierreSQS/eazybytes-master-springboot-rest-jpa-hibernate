@@ -40,25 +40,33 @@ public class AuthController {
     @PostMapping(value = "/login/public",version = "1.0")
     public ResponseEntity<LoginResponseDto> apiLogin(@RequestBody LoginRequestDto loginRequestDto) {
         try {
-            var resultAuthentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequestDto.username(),
-                    loginRequestDto.password()));
+            var resultAuthentication = authenticationManager
+                    .authenticate(new UsernamePasswordAuthenticationToken(loginRequestDto.username(),
+                            loginRequestDto.password()));
+
             // Generate JWT token
             String jwtToken = jwtUtil.generateJwtToken(resultAuthentication);
+
             var userDto = new UserDto();
             var loggedInUser = (JobPortalUser) resultAuthentication.getPrincipal();
+
             assert loggedInUser != null;
             BeanUtils.copyProperties(loggedInUser, userDto);
             userDto.setRole(loggedInUser.getRole().getName());
             userDto.setUserId(loggedInUser.getId());
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(new LoginResponseDto(HttpStatus.OK.getReasonPhrase(),
-                            userDto, jwtToken));
+
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(new LoginResponseDto(HttpStatus.OK.getReasonPhrase(),userDto, jwtToken));
+
         } catch (BadCredentialsException ex) {
             return buildErrorResponse(HttpStatus.UNAUTHORIZED,
                     "Invalid username or password");
+
         } catch (AuthenticationException ex) {
             return buildErrorResponse(HttpStatus.UNAUTHORIZED,
                     "Authentication failed");
+
         } catch (Exception ex) {
             return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR,
                     "An unexpected error occurred");
@@ -69,13 +77,19 @@ public class AuthController {
     @PostMapping(value = "/register/public",version = "1.0")
     public ResponseEntity<String> registerUser(@RequestBody RegisterRequestDto registerRequestDto) {
         JobPortalUser jobPortalUser = new JobPortalUser();
+
         BeanUtils.copyProperties(registerRequestDto, jobPortalUser);
+
         jobPortalUser.setPasswordHash(passwordEncoder.encode(registerRequestDto.password()));
+
         Role role = roleRepository.findRoleByName(ApplicationConstants.ROLE_JOB_SEEKER)
                 .orElseThrow(() -> new IllegalArgumentException("Role not found: " +
                         ApplicationConstants.ROLE_JOB_SEEKER));
+
         jobPortalUser.setRole(role);
+
         jobPortalUserRepository.save(jobPortalUser);
+
         return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully");
     }
 

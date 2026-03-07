@@ -41,20 +41,21 @@ public class JobPortalSecurityConfig {
 
     @Bean
     SecurityFilterChain customSecurityFilterChain(HttpSecurity http) {
-        return http.csrf(csrfConfig -> csrfConfig
+        return http
+                .csrf(csrfConfig -> csrfConfig
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                         .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler()))
-                    .cors(corsConfig -> corsConfig.configurationSource(corsConfigurationSource()))
-                    .authorizeHttpRequests(requests -> {
-                        publicPaths.forEach(path -> requests.requestMatchers(path).permitAll());
-                        adminPaths.forEach(path -> requests.requestMatchers(path).hasRole("ADMIN"));
-                        securedPaths.forEach(path -> requests.requestMatchers(path).authenticated());
-                        requests.anyRequest().denyAll();
-                    })
-                     .addFilterBefore(new JwtTokenValidatorFilter(publicPaths), BasicAuthenticationFilter.class)
-                    .formLogin(FormLoginConfigurer::disable)
-                    .httpBasic(withDefaults())
-                    .build();
+                .cors(corsConfig -> corsConfig.configurationSource(corsConfigurationSource()))
+                .authorizeHttpRequests(requests -> {
+                    publicPaths.forEach(path -> requests.requestMatchers(path).permitAll());
+                    adminPaths.forEach(path -> requests.requestMatchers(path).hasRole("ADMIN"));
+                    securedPaths.forEach(path -> requests.requestMatchers(path).authenticated());
+                    requests.anyRequest().denyAll();
+                })
+                .addFilterBefore(new JwtTokenValidatorFilter(publicPaths), BasicAuthenticationFilter.class)
+                .formLogin(FormLoginConfigurer::disable)
+                .httpBasic(withDefaults())
+                .build();
     }
 
     @Bean
