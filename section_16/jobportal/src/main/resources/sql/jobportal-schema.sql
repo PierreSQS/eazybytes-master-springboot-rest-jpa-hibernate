@@ -1,3 +1,7 @@
+DROP database if exists jobportal;
+
+CREATE database if not exists jobportal;
+
 USE jobportal;
 
 -- Create companies table
