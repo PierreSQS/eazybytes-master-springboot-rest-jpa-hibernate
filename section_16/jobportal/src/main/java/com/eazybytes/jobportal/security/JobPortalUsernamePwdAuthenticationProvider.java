@@ -27,12 +27,12 @@ public class JobPortalUsernamePwdAuthenticationProvider implements Authenticatio
 
     @Override
     public @Nullable Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        String username = authentication.getName();
+        String email = authentication.getName();
         String pwd = Objects.requireNonNull(authentication.getCredentials()).toString();
 
-        JobPortalUser jobPortalUser = jobPortalUserRepository.findJobPortalUserByEmail(username)
+        JobPortalUser jobPortalUser = jobPortalUserRepository.findJobPortalUserByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException(
-                        "User details not found for the user: " + username)
+                        "User details not found for the user: " + email)
         );
 
         List<SimpleGrantedAuthority> authorities = List.of(
