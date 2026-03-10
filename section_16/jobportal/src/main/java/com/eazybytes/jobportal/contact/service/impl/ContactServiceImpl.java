@@ -8,6 +8,7 @@ import com.eazybytes.jobportal.entity.Contact;
 import com.eazybytes.jobportal.repository.ContactRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,6 +32,18 @@ public class ContactServiceImpl implements IContactService {
     @Override
     public List<ContactResponseDto> fetchNewContactMsgs() {
         List<Contact> contacts = contactRepository.findContactsByStatus(ApplicationConstants.NEW_MESSAGE);
+        return contacts.stream().map(this::transformToDto).toList();
+    }
+
+    @Override
+    public List<ContactResponseDto> fetchNewContactMsgsWithSort(String sortBy, String sortDir) {
+        Sort.Direction direction = sortDir.equalsIgnoreCase("desc")
+                ? Sort.Direction.DESC : Sort.Direction.ASC;
+
+        Sort sort = Sort.by(direction, sortBy);
+
+        List<Contact> contacts = contactRepository.findContactsByStatus(ApplicationConstants.NEW_MESSAGE, sort);
+
         return contacts.stream().map(this::transformToDto).toList();
     }
 
