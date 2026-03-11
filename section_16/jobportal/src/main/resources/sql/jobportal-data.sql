@@ -9069,3 +9069,28 @@ VALUES ('ROLE_EMPLOYER', CURRENT_TIMESTAMP, 'DBA');
 
 INSERT INTO roles (name, created_at, created_by)
 VALUES ('ROLE_ADMIN', CURRENT_TIMESTAMP, 'DBA');
+
+-- Insert admin user John Walker
+-- Password 'SecurePass123' hashed with bcrypt (cost factor 12)
+INSERT INTO users (name, email, password_hash, mobile_number, role_id, created_by) VALUES
+(
+    'John Walker',
+    'john.walker@example.com',
+    '$2b$12$M.vxsoRY.kch.KCUZGgSg.i/4iyM0aXB1C.9n9JWqa9.8LdA2kNMq',
+    '+1-555-038-7142',
+    3,
+    'DBA'
+);
+
+-- Insert 10 sample contacts
+INSERT INTO contacts (name, email, user_type, subject, message, status, created_by) VALUES
+('Alice Johnson',    'alice.johnson@example.com',   'CUSTOMER', 'Product Inquiry',         'Hi, I would like to know more about your premium subscription plans and what features are included.',                                         'NEW',         'anonymous user'),
+('Bob Martinez',     'bob.martinez@example.com',    'PARTNER',  'Partnership Proposal',    'We are interested in exploring a strategic partnership with your company. Could we schedule a call to discuss the details?',                  'IN_PROGRESS', 'anonymous user'),
+('Clara Schmidt',    'clara.schmidt@example.com',   'CUSTOMER', 'Billing Issue',           'I was charged twice for my last invoice. Please review my account and issue a refund for the duplicate charge.',                             'OPEN',        'anonymous user'),
+('David Chen',       'david.chen@example.com',      'ADMIN',    'Account Access Problem',  'I am unable to log into my admin account after the latest update. I have already tried resetting my password without success.',              'NEW',         'anonymous user'),
+('Eva Müller',       'eva.mueller@example.com',     'CUSTOMER', 'Feature Request',         'It would be very helpful to have a dark mode option in the dashboard. Many users in our team have requested this as well.',                  'NEW',         'anonymous user'),
+('Frank Thompson',   'frank.thompson@example.com',  'SUPPLIER', 'Delivery Delay Notice',   'We want to inform you that the upcoming shipment scheduled for next week will be delayed by approximately three business days.',             'CLOSED',      'anonymous user'),
+('Grace Nguyen',     'grace.nguyen@example.com',    'CUSTOMER', 'Technical Support',       'The export to PDF feature is not working correctly. The generated files are missing images and some formatting is broken.',                  'IN_PROGRESS', 'anonymous user'),
+('Henry Dubois',     'henry.dubois@example.com',    'PARTNER',  'Contract Renewal',        'Our current agreement expires at the end of this month. Please send over the updated contract terms so we can review and sign promptly.',    'OPEN',        'anonymous user'),
+('Isabella Rossi',   'isabella.rossi@example.com',  'CUSTOMER', 'Cancellation Request',    'I would like to cancel my subscription effective immediately. Please confirm the cancellation and let me know about the refund policy.',      'NEW',         'anonymous user'),
+('James Walker',     'james.walker@example.com',    'ADMIN',    'Security Alert',          'I noticed several suspicious login attempts on my account from an unknown IP address. Please investigate and secure the account right away.', 'IN_PROGRESS', 'anonymous user');
