@@ -8,6 +8,9 @@ import com.eazybytes.jobportal.entity.Contact;
 import com.eazybytes.jobportal.repository.ContactRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -47,6 +50,18 @@ public class ContactServiceImpl implements IContactService {
         return contacts.stream().map(this::transformToDto).toList();
     }
 
+    @Override
+    public Page<ContactResponseDto> fetchContactMsgsWithPaginationAndSort(String status, int pageNumber, int pageSize,
+                                                                          String sortBy, String sortDir) {
+        String statusFilter = (status == null || status.isBlank()) ? ApplicationConstants.NEW_MESSAGE : status;
+        // Create Sort object based on sortBy and sortDir parameters
+        Sort sort = Sort.by(resolveDirection(sortDir), sortBy);
+        // Create Pageable object with page number, page size, and sorting
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
+        // Fetch paginated and sorted contacts from repository
+        return contactRepository.findContactsByStatus(statusFilter, pageable).map(this::transformToDto);
+    }
+
     private Contact transformToEntity(ContactRequestDto contactRequestDto) {
         Contact contact = new Contact();
         BeanUtils.copyProperties(contactRequestDto, contact);
@@ -58,5 +73,9 @@ public class ContactServiceImpl implements IContactService {
         return new ContactResponseDto(contact.getId(),
                 contact.getName(), contact.getEmail(), contact.getUserType(), contact.getSubject(),
                 contact.getMessage(), contact.getStatus(), contact.getCreatedAt());
+    }
+
+    private Sort.Direction resolveDirection(String sortDir) {
+        return "desc".equalsIgnoreCase(sortDir) ? Sort.Direction.DESC : Sort.Direction.ASC;
     }
 }

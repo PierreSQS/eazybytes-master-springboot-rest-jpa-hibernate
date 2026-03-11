@@ -3,10 +3,12 @@ package com.eazybytes.jobportal.contact.controller;
 import org.springframework.web.bind.annotation.*;
 
 import com.eazybytes.jobportal.contact.service.IContactService;
+import com.eazybytes.jobportal.constants.ApplicationConstants;
 import com.eazybytes.jobportal.dto.ContactRequestDto;
 import com.eazybytes.jobportal.dto.ContactResponseDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -43,6 +45,17 @@ public class ContactController {
             @RequestParam(defaultValue = "desc") String sortDir) {
         List<ContactResponseDto> contactResponseDtos = contactService.fetchNewContactMsgsWithSort(sortBy, sortDir);
         return ResponseEntity.status(HttpStatus.OK).body(contactResponseDtos);
+    }
+
+    @GetMapping("/page/admin")
+    public ResponseEntity<Page<ContactResponseDto>> fetchNewContactMsgsWithPaginationAndSort(
+            @RequestParam(defaultValue = "0") int pageNumber,
+            @RequestParam(defaultValue = "10") int pageSize,
+            @RequestParam(defaultValue = "createdAt") String sortBy,
+            @RequestParam(defaultValue = "desc") String sortDir) {
+        Page<ContactResponseDto> contactResponseDtoPage = contactService.fetchContactMsgsWithPaginationAndSort(
+                ApplicationConstants.NEW_MESSAGE, pageNumber, pageSize, sortBy, sortDir);
+        return ResponseEntity.status(HttpStatus.OK).body(contactResponseDtoPage);
     }
 
 }
