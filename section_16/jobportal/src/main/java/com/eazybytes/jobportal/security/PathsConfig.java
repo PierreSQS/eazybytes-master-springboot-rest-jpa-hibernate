@@ -37,7 +37,8 @@ public class PathsConfig {
     public List<String> adminPaths() {
         return List.of(
                 "/api/contacts/admin",
-                "/api/contacts/sort/admin"
+                "/api/contacts/sort/admin",
+                "/api/contacts/page/admin"
         );
     }
 
