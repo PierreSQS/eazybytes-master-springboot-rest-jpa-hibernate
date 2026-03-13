@@ -66,20 +66,14 @@ public class ContactServiceImpl implements IContactService {
     @Override
     @Transactional
     public boolean closeContactMsg(Long contactId) {
-        Contact contact = contactRepository.findById(contactId).orElseThrow(
-                () -> new IllegalArgumentException("Contact message not found for id: " + contactId)
-        );
-
-        if (ApplicationConstants.CLOSED_MESSAGE.equals(contact.getStatus())) {
-            return true;
+        Contact contact = contactRepository.findById(contactId).orElse(null);
+        if (contact == null) {
+            return false;
         }
 
-        if (ApplicationConstants.NEW_MESSAGE.equals(contact.getStatus())) {
-            contact.setStatus(ApplicationConstants.CLOSED_MESSAGE);
-            contactRepository.save(contact);
-        }
-
-        return false;
+        contact.setStatus(ApplicationConstants.CLOSED_MESSAGE);
+        contactRepository.save(contact);
+        return true;
     }
 
     private Contact transformToEntity(ContactRequestDto contactRequestDto) {
