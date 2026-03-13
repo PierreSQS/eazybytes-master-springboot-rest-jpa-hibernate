@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -60,6 +61,25 @@ public class ContactServiceImpl implements IContactService {
         Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
         // Fetch paginated and sorted contacts from repository
         return contactRepository.findContactsByStatus(statusFilter, pageable).map(this::transformToDto);
+    }
+
+    @Override
+    @Transactional
+    public boolean closeContactMsg(Long contactId) {
+        Contact contact = contactRepository.findById(contactId).orElseThrow(
+                () -> new IllegalArgumentException("Contact message not found for id: " + contactId)
+        );
+
+        if (ApplicationConstants.CLOSED_MESSAGE.equals(contact.getStatus())) {
+            return true;
+        }
+
+        if (ApplicationConstants.NEW_MESSAGE.equals(contact.getStatus())) {
+            contact.setStatus(ApplicationConstants.CLOSED_MESSAGE);
+            contactRepository.save(contact);
+        }
+
+        return false;
     }
 
     private Contact transformToEntity(ContactRequestDto contactRequestDto) {

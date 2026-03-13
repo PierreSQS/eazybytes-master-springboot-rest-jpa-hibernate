@@ -3,7 +3,7 @@ package com.eazybytes.jobportal.constants;
 public class ApplicationConstants {
 
     private ApplicationConstants() {
-        throw new AssertionError("Utility class cannot be instantiated");
+        // Private constructor to prevent instantiation
     }
 
     public static final String JWT_SECRET_KEY = "JWT_SECRET";

@@ -58,4 +58,13 @@ public class ContactController {
         return ResponseEntity.status(HttpStatus.OK).body(contactResponseDtoPage);
     }
 
+    @PatchMapping("/{id}/status/admin")
+    public ResponseEntity<String> closeContactMsg(@PathVariable Long id) {
+        boolean isAlreadyClosed = contactService.closeContactMsg(id);
+        String responseMessage = isAlreadyClosed
+                ? "Message is already closed"
+                : "Message successfully closed";
+        return ResponseEntity.status(HttpStatus.OK).body(responseMessage);
+    }
+
 }
