@@ -23,6 +23,7 @@ public class ApplicationUtility {
         if (principal instanceof String username && !"anonymousUser".equalsIgnoreCase(username)) {
             return username;
         }
-        return null;
+
+        return ApplicationConstants.SYSTEM;
     }
 }
