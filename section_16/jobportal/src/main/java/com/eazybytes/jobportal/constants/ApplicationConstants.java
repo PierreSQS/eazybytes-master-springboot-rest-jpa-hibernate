@@ -3,7 +3,6 @@ package com.eazybytes.jobportal.constants;
 public class ApplicationConstants {
 
     private ApplicationConstants() {
-        // Private constructor to prevent instantiation
     }
 
     public static final String JWT_SECRET_KEY = "JWT_SECRET";
@@ -16,5 +15,7 @@ public class ApplicationConstants {
 
     public static final String  NEW_MESSAGE = "NEW";
     public static final String  CLOSED_MESSAGE = "CLOSED";
+
+    public static final String  SYSTEM = "SYSTEM";
 
 }
