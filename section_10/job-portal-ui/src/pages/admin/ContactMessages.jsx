@@ -74,8 +74,8 @@ const ContactMessages = () => {
         : [];
 
       setMessages(contactsData);
-      setTotalPages(pageData.totalPages);
-      setTotalElements(pageData.totalElements);
+      setTotalPages(pageData.page.totalPages);
+      setTotalElements(pageData.page.totalElements);
       setError("");
     } catch (err) {
       console.error("Error fetching contact messages:", err);
