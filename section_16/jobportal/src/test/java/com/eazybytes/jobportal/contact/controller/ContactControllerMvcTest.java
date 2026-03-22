@@ -93,11 +93,11 @@ class ContactControllerMvcTest extends AbstractControllerMvcTest {
     }
 
     @Test
-    void fetchNewContactMsgsWithoutAuthenticationReturnsForbidden() {
+    void fetchNewContactMsgsWithoutAuthenticationReturnsUnauthorized() {
         restTestClient.get()
                 .uri("/api/contacts/admin")
                 .exchange()
-                .expectStatus().isForbidden();
+                .expectStatus().isUnauthorized();
     }
 
     @Test
