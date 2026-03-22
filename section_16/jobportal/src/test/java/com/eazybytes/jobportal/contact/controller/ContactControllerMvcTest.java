@@ -33,7 +33,7 @@ class ContactControllerMvcTest extends AbstractControllerMvcTest {
     private AuthenticationProvider authenticationProvider;
 
     @Test
-    void saveContactMsgWithCsrfReturnsCreated() throws Exception {
+    void saveContactMsgWithCsrfReturnsCreated() {
         ContactRequestDto requestDto = new ContactRequestDto(
                 "alice@jobportal.test",
                 "I am interested in your employer account.",
@@ -53,7 +53,7 @@ class ContactControllerMvcTest extends AbstractControllerMvcTest {
     }
 
     @Test
-    void saveContactMsgWithoutCsrfReturnsForbidden() throws Exception {
+    void saveContactMsgWithoutCsrfReturnsForbidden() {
         ContactRequestDto requestDto = new ContactRequestDto(
                 "alice@jobportal.test",
                 "I am interested in your employer account.",
@@ -70,7 +70,7 @@ class ContactControllerMvcTest extends AbstractControllerMvcTest {
     }
 
     @Test
-    void saveContactMsgWithInvalidPayloadReturnsBadRequest() throws Exception {
+    void saveContactMsgWithInvalidPayloadReturnsBadRequest() {
         ContactRequestDto requestDto = new ContactRequestDto(
                 "invalid-email",
                 "hey",
@@ -111,7 +111,7 @@ class ContactControllerMvcTest extends AbstractControllerMvcTest {
 
     @Test
     void fetchNewContactMsgsWithAdminRoleReturnsMessages() {
-        ContactResponseDto dto = createResponseDto(1L, "NEW");
+        ContactResponseDto dto = createResponseDto(1L);
         when(contactService.fetchNewContactMsgs()).thenReturn(List.of(dto));
 
         restTestClient.get()
@@ -126,7 +126,7 @@ class ContactControllerMvcTest extends AbstractControllerMvcTest {
 
     @Test
     void fetchNewContactMsgsWithSortPassesArgumentsAndReturnsMessages() {
-        ContactResponseDto dto = createResponseDto(2L, "NEW");
+        ContactResponseDto dto = createResponseDto(2L);
         when(contactService.fetchNewContactMsgsWithSort("name", "asc")).thenReturn(List.of(dto));
 
         restTestClient.get()
@@ -145,7 +145,7 @@ class ContactControllerMvcTest extends AbstractControllerMvcTest {
 
     @Test
     void fetchNewContactMsgsWithPaginationAndSortReturnsPage() {
-        ContactResponseDto dto = createResponseDto(3L, "NEW");
+        ContactResponseDto dto = createResponseDto(3L);
         when(contactService.fetchContactMsgsWithPaginationAndSort("NEW", 0, 5, "createdAt", "desc"))
                 .thenReturn(new PageImpl<>(List.of(dto), PageRequest.of(0, 5), 1));
 
@@ -191,7 +191,7 @@ class ContactControllerMvcTest extends AbstractControllerMvcTest {
                 .expectBody(String.class).isEqualTo("the contact path is wrong since the id doesn't exist");
     }
 
-    private ContactResponseDto createResponseDto(Long id, String status) {
+    private ContactResponseDto createResponseDto(Long id) {
         return new ContactResponseDto(
                 id,
                 "Contact " + id,
@@ -199,7 +199,7 @@ class ContactControllerMvcTest extends AbstractControllerMvcTest {
                 "Employer",
                 "Subject " + id,
                 "Message content " + id,
-                status,
+                "NEW",
                 Instant.parse("2026-03-15T08:30:00Z"));
     }
 }
