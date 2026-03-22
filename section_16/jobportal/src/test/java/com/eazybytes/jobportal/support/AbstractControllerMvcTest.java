@@ -1,19 +1,29 @@
 package com.eazybytes.jobportal.support;
 
 import com.eazybytes.jobportal.constants.ApplicationConstants;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.OctetSequenceKey;
+import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
+import com.nimbusds.jose.jwk.source.JWKSource;
+import com.nimbusds.jose.proc.SecurityContext;
 import org.springframework.data.domain.AuditorAware;
-import org.springframework.http.MediaType;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
+import org.springframework.http.MediaType;
+import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
+import org.springframework.security.oauth2.jwt.JwsHeader;
+import org.springframework.security.oauth2.jwt.JwtClaimsSet;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
+import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
+import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.client.RestTestClient;
 import tools.jackson.databind.json.JsonMapper;
 
 import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
-import java.util.Date;
 
 public abstract class AbstractControllerMvcTest {
 
@@ -32,7 +42,7 @@ public abstract class AbstractControllerMvcTest {
             .findAndAddModules()
             .build();
 
-    protected String toJson(Object value) throws Exception {
+    protected String toJson(Object value) {
         return jsonMapper.writeValueAsString(value);
     }
 
@@ -49,18 +59,28 @@ public abstract class AbstractControllerMvcTest {
     }
 
     protected String createJwtToken(String email, String roles) {
-        SecretKey secretKey = Keys.hmacShaKeyFor(
-                ApplicationConstants.JWT_SECRET_DEFAULT_VALUE.getBytes(StandardCharsets.UTF_8));
+        SecretKey secretKey = new SecretKeySpec(
+                ApplicationConstants.JWT_SECRET_DEFAULT_VALUE.getBytes(StandardCharsets.UTF_8),
+                "HmacSHA256");
+
+        OctetSequenceKey jwk = new OctetSequenceKey.Builder(secretKey.getEncoded())
+                .algorithm(JWSAlgorithm.HS256)
+                .build();
+        JWKSource<SecurityContext> jwkSource = new ImmutableJWKSet<>(new JWKSet(jwk));
+        JwtEncoder encoder = new NimbusJwtEncoder(jwkSource);
+
         Instant now = Instant.now();
-        return Jwts.builder()
+        JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer("jobportal-test")
                 .subject("test-token")
+                .issuedAt(now)
+                .expiresAt(now.plusSeconds(3600))
                 .claim("email", email)
                 .claim("roles", roles)
-                .issuedAt(Date.from(now))
-                .expiration(Date.from(now.plusSeconds(3600)))
-                .signWith(secretKey)
-                .compact();
+                .build();
+
+        JwsHeader header = JwsHeader.with(MacAlgorithm.HS256).build();
+        return encoder.encode(JwtEncoderParameters.from(header, claims)).getTokenValue();
     }
 
     protected RestTestClient.RequestBodySpec withCsrf(RestTestClient.RequestBodySpec request) {
@@ -68,6 +88,3 @@ public abstract class AbstractControllerMvcTest {
                 .header(CSRF_HEADER_NAME, CSRF_TOKEN);
     }
 }
-
-
-
