@@ -9075,7 +9075,7 @@ VALUES ('ROLE_ADMIN', CURRENT_TIMESTAMP, 'DBA');
 INSERT INTO users (name, email, password_hash, mobile_number, role_id, created_by) VALUES
 (
     'John Walker',
-    'john.walker@example.com',
+    'jo.walker@gmail.com',
     '$2b$12$M.vxsoRY.kch.KCUZGgSg.i/4iyM0aXB1C.9n9JWqa9.8LdA2kNMq',
     '+1-555-038-7142',
     3,
