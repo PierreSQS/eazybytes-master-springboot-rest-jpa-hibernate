@@ -7,8 +7,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 public class ApplicationUtility {
     
-    private ApplicationUtility() {}
-
     public static String getLoggedUser(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
